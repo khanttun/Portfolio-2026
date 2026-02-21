@@ -13,7 +13,7 @@ const projects = [
     description:
       "Award-winning landing page developed during the Hylife Hackathon in Chiang Rai. Led the frontend development to create a high-conversion user experience, securing the 2nd Runner Up prize.",
     stack: ["React", "HTML", "CSS", "JavaScript", "Git"],
-    image: "images/ecopoint.png",
+    image: "images/ecopoint.PNG",
     demo: "https://ecopoint-landing-nu.vercel.app/",
     github: "https://github.com/khanttun/Ecopoint-landing",
     isAwardWinner: true,
@@ -48,7 +48,7 @@ const projects = [
       </>
     ),
     stack: ["React", "Node.js", "MongoDB", "OpenAI API"],
-    image: "images/hackathon.png",
+    image: "images/hackathon.PNG",
     demo: "https://v0-life-path-gold.vercel.app/",
     github: "https://github.com/khanttun/life-path",
     isAwardWinner: false,
@@ -59,7 +59,7 @@ const projects = [
   title: "Interactive Web Experience",
   description: "A high-engagement, responsive micro-site featuring custom CSS animations and interactive state management. Built to explore fluid user interactions and optimized for rapid deployment via Vercel.",
   stack: ["Next.js", "Tailwind CSS", "Framer Motion", "Vercel"],
-  image: "images/romance.png",
+  image: "images/romance.PNG",
   demo: "https://valentine-s-day-website-theta.vercel.app/",
   github: "#",
   isAwardWinner: false,
