@@ -61,7 +61,7 @@ export default function HeroSection() {
     Khant Zayar Tun
   </h1>
         <p className="mt-3 font-mono text-lg text-primary sm:text-xl">
-          Frontend Cloud Architect
+           Solution Architect
         </p>
         <p className="mx-auto mt-6 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
           Building scalable infrastructure and intelligent systems.

@@ -32,8 +32,8 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        {/* Logo - Always returns to home */}
-        <Link href="/" className="flex items-center gap-2 text-primary group" aria-label="Home">
+        {/* Logo - Returns to hero section */}
+        <Link href="/#hero-section" className="flex items-center gap-2 text-primary group" aria-label="Home">
           <Terminal className="h-5 w-5 transition-transform group-hover:scale-110" />
           <span className="font-mono text-sm font-semibold tracking-wider">KT</span>
         </Link>
