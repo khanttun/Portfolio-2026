@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState, useRef } from "react"
 import { ChevronLeft, ChevronRight, Star, Maximize2 } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
 import SectionHeading from "./section-heading"
@@ -48,6 +48,9 @@ const awards = [
 export default function AwardsSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const emblaNode = useRef<HTMLDivElement>(null)
+  const lastScrollTime = useRef<number>(0)
+  const scrollCooldown = 600 // milliseconds between swipes
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return
@@ -63,13 +66,61 @@ export default function AwardsSection() {
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
 
+  // Handle 2-finger trackpad swipe
+  useEffect(() => {
+    if (!emblaNode.current) return
+
+    const handleWheel = (e: WheelEvent) => {
+      // Detect trackpad 2-finger swipe
+      const isTrackpad = e.deltaMode === 0 && (Math.abs(e.deltaX) > 30 || Math.abs(e.deltaY) > 30)
+      
+      if (!isTrackpad) return
+      
+      // Debounce: prevent multiple swipes within cooldown period
+      const now = Date.now()
+      if (now - lastScrollTime.current < scrollCooldown) {
+        return
+      }
+      
+      e.preventDefault()
+      lastScrollTime.current = now
+
+      // Navigate based on horizontal swipe primarily
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        // Horizontal swipe
+        if (e.deltaX < 0) {
+          scrollPrev() // Left swipe = next
+        } else {
+          scrollNext() // Right swipe = prev
+        }
+      } else if (Math.abs(e.deltaY) > 30) {
+        // Vertical swipe as fallback
+        if (e.deltaY < 0) {
+          scrollNext() // Up swipe = next
+        } else {
+          scrollPrev() // Down swipe = prev
+        }
+      }
+    }
+
+    const viewportElement = emblaNode.current
+    viewportElement.addEventListener("wheel", handleWheel, { passive: false })
+    
+    return () => {
+      viewportElement.removeEventListener("wheel", handleWheel)
+    }
+  }, [scrollPrev, scrollNext])
+
   return (
     <section id="awards" className="scroll-mt-20 px-6 py-24 bg-black/20">
       <div className="mx-auto max-w-5xl">
         <SectionHeading label="03" title="Awards & Recognition" />
 
         <div className="relative mt-12 group">
-          <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d0d]" ref={emblaRef}>
+          <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d0d]" ref={(node) => {
+            emblaRef(node)
+            emblaNode.current = node
+          }}>
             <div className="flex">
               {awards.map((award, index) => (
                 <div key={index} className="min-w-0 flex-[0_0_100%]">

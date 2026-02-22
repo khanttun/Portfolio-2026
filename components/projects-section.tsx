@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 import { ExternalLink, Github, Trophy, ChevronLeft, ChevronRight } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
 import SectionHeading from "./section-heading"
@@ -74,9 +74,57 @@ export default function ProjectsSection() {
     loop: true, 
     align: "center" 
   })
+  const emblaNode = useRef<HTMLDivElement>(null)
 
-  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
-  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
+  const lastScrollTime = useRef<number>(0)
+  const scrollCooldown = 600 // milliseconds between swipes
+
+  // Handle 2-finger trackpad swipe
+  useEffect(() => {
+    if (!emblaNode.current) return
+
+    const handleWheel = (e: WheelEvent) => {
+      // Detect trackpad 2-finger swipe
+      const isTrackpad = e.deltaMode === 0 && (Math.abs(e.deltaX) > 30 || Math.abs(e.deltaY) > 30)
+      
+      if (!isTrackpad) return
+      
+      // Debounce: prevent multiple swipes within cooldown period
+      const now = Date.now()
+      if (now - lastScrollTime.current < scrollCooldown) {
+        return
+      }
+      
+      e.preventDefault()
+      lastScrollTime.current = now
+
+      // Navigate based on horizontal swipe primarily
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        // Horizontal swipe
+        if (e.deltaX < 0) {
+          scrollNext() // Left swipe = next
+        } else {
+          scrollPrev() // Right swipe = prev
+        }
+      } else if (Math.abs(e.deltaY) > 30) {
+        // Vertical swipe as fallback
+        if (e.deltaY < 0) {
+          scrollNext() // Up swipe = next
+        } else {
+          scrollPrev() // Down swipe = prev
+        }
+      }
+    }
+
+    const viewportElement = emblaNode.current
+    viewportElement.addEventListener("wheel", handleWheel, { passive: false })
+    
+    return () => {
+      viewportElement.removeEventListener("wheel", handleWheel)
+    }
+  }, [scrollPrev, scrollNext])
 
   return (
     <section id="projects" className="scroll-mt-20 px-6 py-24">
@@ -104,7 +152,10 @@ export default function ProjectsSection() {
         </div>
 
         {/* Embla Viewport */}
-        <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
+        <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={(node) => {
+          emblaRef(node)
+          emblaNode.current = node
+        }}>
           {/* Embla Container */}
           <div className="flex">
             {projects.map((project) => (

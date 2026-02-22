@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowDown, FolderKanban, Award, Mail } from "lucide-react"
+// Added FileDown icon here
+import { ArrowDown, FolderKanban, Award, Mail, FileDown } from "lucide-react"
 
 export default function HeroSection() {
   const [visible, setVisible] = useState(false)
@@ -27,47 +28,46 @@ export default function HeroSection() {
       <div className="pointer-events-none absolute top-1/4 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-[120px]" />
 
       <div
-  className={`relative z-10 mx-auto max-w-3xl text-center transition-all duration-700 ${
-    visible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-  }`}
->
+        className={`relative z-10 mx-auto max-w-3xl text-center transition-all duration-700 ${
+          visible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+        }`}
+      >
 
-  <div className="relative mb-8 flex justify-center">
-    <div className="absolute inset-0 m-auto h-64 w-64 rounded-full border border-primary/20 bg-primary/5 blur-sm" />
-    
-    <div className="relative h-44 w-44 overflow-hidden rounded-full border-2 border-border bg-card shadow-2xl">
-      <img
-        src="images/khant-zayar-tun.jpg"
-        alt="Khant Zayar Tun"
-        className="h-full w-full object-cover"
-        style={{ 
-        transform: 'scale(1.8) translateY(1%) translateX(-10%)', // Scale 1.35 zooms in, translateY moves it down if your forehead is cut off
-        transformOrigin: 'center center' 
-        }}
-      />
-    </div>
+        <div className="relative mb-8 flex justify-center">
+          <div className="absolute inset-0 m-auto h-64 w-64 rounded-full border border-primary/20 bg-primary/5 blur-sm" />
+          
+          <div className="relative h-44 w-44 overflow-hidden rounded-full border-2 border-border bg-card shadow-2xl">
+            <img
+              src="images/khant-zayar-tun.jpg"
+              alt="Khant Zayar Tun"
+              className="h-full w-full object-cover"
+              style={{ 
+                transform: 'scale(1.8) translateY(1%) translateX(-10%)',
+                transformOrigin: 'center center' 
+              }}
+            />
+          </div>
 
-    {/* The Badge (Positioned to overlap the bottom of the photo) */}
-    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full border border-border bg-secondary/90 backdrop-blur-md px-4 py-1.5 shadow-lg">
-      <span className="inline-block h-2 w-2 rounded-full bg-primary animate-pulse" />
-      <span className="font-mono text-xs text-muted-foreground whitespace-nowrap">
-        Available for work
-      </span>
-    </div>
-  </div>
-  {/* --- PHOTO CONTAINER END --- */}
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full border border-border bg-secondary/90 backdrop-blur-md px-4 py-1.5 shadow-lg">
+            <span className="inline-block h-2 w-2 rounded-full bg-primary animate-pulse" />
+            <span className="font-mono text-xs text-muted-foreground whitespace-nowrap">
+              Available for work
+            </span>
+          </div>
+        </div>
 
-  <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-    Khant Zayar Tun
-  </h1>
+        <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          Khant Zayar Tun
+        </h1>
         <p className="mt-3 font-mono text-lg text-primary sm:text-xl">
-           Solution Architect
+          Solution Architect
         </p>
         <p className="mx-auto mt-6 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
           Building scalable infrastructure and intelligent systems.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          {/* Main Action: Projects */}
           <a
             href="#projects"
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:scale-105"
@@ -75,13 +75,25 @@ export default function HeroSection() {
             <FolderKanban className="h-4 w-4" />
             View Projects
           </a>
+
+          {/* New Action: Download CV */}
+          <a
+            href="/Khant_Zayar_Tun_CV (1).pdf" // Ensure your PDF is in the /public folder
+            download="Khant_Zayar_Tun_CV.pdf"
+            className="inline-flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/10 px-6 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
+          >
+            <FileDown className="h-4 w-4" />
+            Download my CV
+          </a>
+
           <a
             href="#certifications"
             className="inline-flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
           >
             <Award className="h-4 w-4" />
-            View Certifications
+            Certifications
           </a>
+          
           <a
             href="#contact"
             className="inline-flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
