@@ -78,8 +78,8 @@ export default function HeroSection() {
 
           {/* New Action: Download CV */}
           <a
-            href="/Khant_Zayar_Tun_CV (1).pdf" // Ensure your PDF is in the /public folder
-            download="Khant_Zayar_Tun_CV.pdf"
+            href="/my cv/Khant-Zayar-Tun-CV-2026.pdf" // Ensure your PDF is in the /public folder
+            download="Khant-Zayar-Tun-CV-2026.pdf"
             className="inline-flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/10 px-6 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
           >
             <FileDown className="h-4 w-4" />
