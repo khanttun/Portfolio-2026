@@ -3,19 +3,22 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Menu, X, Terminal } from "lucide-react"
-
-const navLinks = [
-  { label: "Home", href: "/#hero-section" },
-  { label: "About", href: "/about" },
-  { label: "Projects", href: "/#projects" },
-  { label: "Certifications", href: "/#certifications" },
-  { label: "Awards", href: "/#awards" },
-  { label: "Contact", href: "/#contact" },
-]
+import LanguageSwitcher from "./language-switcher"
+import { useLanguage } from "@/lib/i18n/language-provider"
 
 export default function Navbar() {
+  const { t } = useLanguage()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  const navLinks = [
+    { label: t.nav.home, href: "/#hero-section" },
+    { label: t.nav.about, href: "/about" },
+    { label: t.nav.projects, href: "/#projects" },
+    { label: t.nav.certifications, href: "/#certifications" },
+    { label: t.nav.awards, href: "/#awards" },
+    { label: t.nav.contact, href: "/#contact" },
+  ]
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -32,13 +35,11 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        {/* Logo - Returns to home page */}
-        <Link href="/#hero-section" className="flex items-center gap-2 text-primary group" aria-label="Home">
+        <Link href="/#hero-section" className="flex items-center gap-2 text-primary group" aria-label={t.nav.home}>
           <Terminal className="h-5 w-5 transition-transform group-hover:scale-110" />
           <span className="font-mono text-sm font-semibold tracking-wider">KT</span>
         </Link>
 
-        {/* Desktop Menu */}
         <ul className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
@@ -50,19 +51,23 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          <li>
+            <LanguageSwitcher />
+          </li>
         </ul>
 
-        {/* Mobile Toggle */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="text-muted-foreground md:hidden"
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-3 md:hidden">
+          <LanguageSwitcher compact />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="text-muted-foreground"
+            aria-label={t.nav.toggleMenu}
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
       {mobileOpen && (
         <div className="border-b border-border bg-background/95 backdrop-blur-lg md:hidden">
           <ul className="flex flex-col gap-1 px-6 py-4">

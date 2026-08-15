@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
+import Providers from '@/components/providers'
 
 import './globals.css'
 
@@ -21,8 +22,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${_inter.variable} ${_jetbrainsMono.variable}`}>
-      <body className="font-sans antialiased">{children}</body>
+    <html lang="en" className={`${_inter.variable} ${_jetbrainsMono.variable}`} suppressHydrationWarning>
+      <body className="font-sans antialiased">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   )
 }

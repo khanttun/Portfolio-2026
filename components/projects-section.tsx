@@ -4,14 +4,11 @@ import React, { useCallback, useEffect, useRef } from "react"
 import { ExternalLink, Github, Trophy, ChevronLeft, ChevronRight } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
 import SectionHeading from "./section-heading"
+import { useLanguage } from "@/lib/i18n/language-provider"
 
-// 1. Data Object
-const projects = [
+const projectMeta = [
   {
-    id: 1,
-    title: "Habor: MFU Student Center",
-    description:
-      "A personal portfolio website showcasing projects, skills, and achievements. Built with Next.js and Tailwind CSS for a modern, responsive design.",
+    id: 1 as const,
     stack: ["Next.js", "Tailwind CSS", "TypeScript", "Vercel", "PostgreSQL", "Supabase"],
     image: "images/harbor.png",
     demo: "https://harbor-student-center.vercel.app/",
@@ -19,10 +16,7 @@ const projects = [
     isAwardWinner: false,
   },
   {
-    id: 2,
-    title: "Eco-Point Landing Page",
-    description:
-      "Award-winning landing page developed during the Hylife Hackathon in Chiang Rai. Led the frontend development to create a high-conversion user experience, securing the 2nd Runner Up prize.",
+    id: 2 as const,
     stack: ["React", "HTML", "CSS", "JavaScript", "Git"],
     image: "images/ecopoint.PNG",
     demo: "https://ecopoint-landing-nu.vercel.app/",
@@ -30,10 +24,7 @@ const projects = [
     isAwardWinner: true,
   },
   {
-    id: 3,
-    title: "Blood of the Rift: Top 10 Finalist",
-    description:
-      "Finalist in the 2025 Generative AI Game Jam. Developed a 3D Ronin action-puzzle game using Spline, integrating AI-driven assets with interactive environment design and logic-based puzzles.",
+    id: 3 as const,
     stack: ["Spline 3D", "Generative AI", "Logic Design", "UI/UX", "Vite"],
     image: "images/game.jpg",
     demo: "https://my.spline.design/forestfirepreventionscenarios-vGYVJW3W02Ot3Cu0fZ5sEMjQ/",
@@ -41,33 +32,19 @@ const projects = [
     isAwardWinner: true,
   },
   {
-    id: 4,
-    title: "LifePath: AI-Powered Career Advisor",
-    description: (
-      <>
-        An AI-powered career guidance platform that helps users identify their ideal career paths. Co-created with{" "}
-        <a
-          href="https://khantnyarkoko.vercel.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Khant Nyar Ko Ko
-        </a>
-      </>
-    ),
+    id: 4 as const,
     stack: ["React", "Node.js", "MongoDB", "OpenAI API"],
     image: "images/hackathon.PNG",
     demo: "https://v0-life-path-gold.vercel.app/",
     github: "https://github.com/khanttun/life-path",
     isAwardWinner: false,
+    collaborator: {
+      name: "Khant Nyar Ko Ko",
+      href: "https://khantnyarkoko.vercel.app/",
+    },
   },
   {
-    id: 5,
-    title: "Interactive Web Experience",
-    description:
-      "A high-engagement, responsive micro-site featuring custom CSS animations and interactive state management. Built to explore fluid user interactions and optimized for rapid deployment via Vercel.",
+    id: 5 as const,
     stack: ["Next.js", "Tailwind CSS", "Framer Motion", "Vercel"],
     image: "images/romance.PNG",
     demo: "https://valentine-s-day-website-theta.vercel.app/",
@@ -76,60 +53,53 @@ const projects = [
   },
 ]
 
-// 2. Main Section (Now with Slider Logic)
 export default function ProjectsSection() {
-  // Configured to show 1 project at a time
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
-    loop: true, 
-    align: "center" 
+  const { t } = useLanguage()
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: "center",
   })
   const emblaNode = useRef<HTMLDivElement>(null)
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
   const lastScrollTime = useRef<number>(0)
-  const scrollCooldown = 600 // milliseconds between swipes
+  const scrollCooldown = 600
 
-  // Handle 2-finger trackpad swipe
   useEffect(() => {
     if (!emblaNode.current) return
 
     const handleWheel = (e: WheelEvent) => {
-      // Detect trackpad 2-finger swipe
       const isTrackpad = e.deltaMode === 0 && (Math.abs(e.deltaX) > 30 || Math.abs(e.deltaY) > 30)
-      
+
       if (!isTrackpad) return
-      
-      // Debounce: prevent multiple swipes within cooldown period
+
       const now = Date.now()
       if (now - lastScrollTime.current < scrollCooldown) {
         return
       }
-      
+
       e.preventDefault()
       lastScrollTime.current = now
 
-      // Navigate based on horizontal swipe primarily
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-        // Horizontal swipe
         if (e.deltaX < 0) {
-          scrollNext() // Left swipe = next
+          scrollNext()
         } else {
-          scrollPrev() // Right swipe = prev
+          scrollPrev()
         }
       } else if (Math.abs(e.deltaY) > 30) {
-        // Vertical swipe as fallback
         if (e.deltaY < 0) {
-          scrollNext() // Up swipe = next
+          scrollNext()
         } else {
-          scrollPrev() // Down swipe = prev
+          scrollPrev()
         }
       }
     }
 
     const viewportElement = emblaNode.current
     viewportElement.addEventListener("wheel", handleWheel, { passive: false })
-    
+
     return () => {
       viewportElement.removeEventListener("wheel", handleWheel)
     }
@@ -138,100 +108,105 @@ export default function ProjectsSection() {
   return (
     <section id="projects" className="scroll-mt-20 px-6 py-24">
       <div className="mx-auto max-w-2xl">
-        <div className="flex items-end justify-between mb-10">
-          <SectionHeading label="01" title="Featured Projects" />
-          
-          {/* Slider Controls */}
-          <div className="flex gap-2 mb-2">
-            <button 
+        <div className="mb-10 flex items-end justify-between">
+          <SectionHeading label={t.projects.label} title={t.projects.title} />
+
+          <div className="mb-2 flex gap-2">
+            <button
               onClick={scrollPrev}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card hover:bg-secondary transition-colors"
-              aria-label="Previous project"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
+              aria-label={t.projects.prev}
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <button 
+            <button
               onClick={scrollNext}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card hover:bg-secondary transition-colors"
-              aria-label="Next project"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
+              aria-label={t.projects.next}
             >
               <ChevronRight className="h-5 w-5" />
             </button>
           </div>
         </div>
 
-        {/* Embla Viewport */}
-        <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={(node) => {
-          emblaRef(node)
-          emblaNode.current = node
-        }}>
-          {/* Embla Container */}
+        <div
+          className="cursor-grab overflow-hidden active:cursor-grabbing"
+          ref={(node) => {
+            emblaRef(node)
+            emblaNode.current = node
+          }}
+        >
           <div className="flex">
-            {projects.map((project) => (
-              <div 
-                key={project.id} 
-                className="min-w-0 flex-[0_0_90%] px-4"
-              >
-                <ProjectCard project={project}/>
+            {projectMeta.map((project) => (
+              <div key={project.id} className="min-w-0 flex-[0_0_90%] px-4">
+                <ProjectCard project={project} />
               </div>
             ))}
           </div>
         </div>
-        
-        <p className="mt-6 text-center text-xs text-muted-foreground animate-pulse">
-          ← Swipe to view more projects →
+
+        <p className="mt-6 animate-pulse text-center text-xs text-muted-foreground">
+          {t.projects.swipeHint}
         </p>
       </div>
     </section>
   )
 }
 
-// 3. Sub-component for the Project Card (Your original design)
-function ProjectCard({ project }: { project: typeof projects[0] }) {
+function ProjectCard({ project }: { project: (typeof projectMeta)[number] }) {
+  const { t } = useLanguage()
+  const copy = t.projects.items[project.id]
+
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:bg-card/80">
-      
-      {/* Award Badge */}
       {project.isAwardWinner && (
         <div className="absolute right-3 top-3 z-20 flex items-center gap-1 rounded-full bg-yellow-500 px-3 py-1 text-[10px] font-bold text-black shadow-lg">
           <Trophy className="h-3 w-3" />
-          PRIZE WINNER
+          {t.projects.prizeWinner}
         </div>
       )}
 
-      {/* Thumbnail */}
-      <a 
-        href={project.demo} 
-        target="_blank" 
+      <a
+        href={project.demo}
+        target="_blank"
         rel="noopener noreferrer"
         className="relative aspect-[16/9] w-full overflow-hidden border-b border-border"
       >
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100 backdrop-blur-[2px]">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/10 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
           <div className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-xl">
-            View Live Demo
+            {t.projects.viewDemo}
           </div>
         </div>
         <img
           src={project.image || "/images/placeholder.png"}
-          alt={project.title}
+          alt={copy.title}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </a>
 
-      {/* Content */}
-      <div className="p-4"> {/* Slightly reduced padding to make the card smaller */}
+      <div className="p-4">
         <div className="flex items-start justify-between gap-4">
-          <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
-            {project.title}
+          <h3 className="text-lg font-bold text-foreground transition-colors group-hover:text-primary">
+            {copy.title}
           </h3>
           <div className="flex shrink-0 items-center gap-3">
             {project.github !== "#" && (
-              <a href={project.github} target="_blank" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground transition-colors hover:text-primary"
+              >
                 <Github className="h-5 w-5" />
               </a>
             )}
             {project.demo !== "#" && (
-              <a href={project.demo} target="_blank" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href={project.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground transition-colors hover:text-primary"
+              >
                 <ExternalLink className="h-5 w-5" />
               </a>
             )}
@@ -239,15 +214,32 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
         </div>
 
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          {project.description}
+          {"description" in copy ? (
+            copy.description
+          ) : (
+            <>
+              {copy.descriptionBefore}{" "}
+              {project.collaborator ? (
+                <a
+                  href={project.collaborator.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-2 transition-colors hover:text-primary/80"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {project.collaborator.name}
+                </a>
+              ) : null}
+              {copy.descriptionAfter}
+            </>
+          )}
         </p>
 
-        {/* Tech Stack Tags */}
         <div className="mt-6 flex flex-wrap gap-2">
           {project.stack.map((tech) => (
-            <span 
-              key={tech} 
-              className="rounded-md border border-border bg-secondary/50 px-2.5 py-1 font-mono text-[10px] text-muted-foreground uppercase tracking-wider"
+            <span
+              key={tech}
+              className="rounded-md border border-border bg-secondary/50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground"
             >
               {tech}
             </span>

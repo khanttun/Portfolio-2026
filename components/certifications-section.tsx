@@ -1,9 +1,17 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { motion } from "framer-motion"
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react"
+import { AnimatePresence, motion } from "framer-motion"
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
 import SectionHeading from "./section-heading"
+import { useLanguage } from "@/lib/i18n/language-provider"
 
 const certifications = [
   { name: "OCI: Foundational Associate", org: "Oracle", year: "August, 2026", link: "/images/oci1.jpg" },
@@ -17,110 +25,272 @@ const certifications = [
   { name: "Level 4 Diploma in computing", org: "NCC Education", year: "April, 2024", link: "/images/Huawei Certificate/CCNA.jpg" },
 ]
 
-const springTransition = { type: "spring" as const, stiffness: 220, damping: 22 }
+const FAN_DEPTH = 3
+
+const spring = { type: "spring" as const, stiffness: 280, damping: 32, mass: 0.85 }
+
+function getRelativeSlot(index: number, active: number, total: number): number | null {
+  let diff = (index - active + total) % total
+  if (diff > total / 2) diff -= total
+  if (Math.abs(diff) > FAN_DEPTH) return null
+  return diff
+}
+
+function slotTransform(slot: number) {
+  const abs = Math.abs(slot)
+  const dir = Math.sign(slot)
+
+  if (slot === 0) {
+    return {
+      x: 0,
+      y: 0,
+      scale: 1,
+      rotateY: 0,
+      opacity: 1,
+      zIndex: 40,
+      filter: "blur(0px)",
+    }
+  }
+
+  return {
+    x: dir * (110 + abs * 72),
+    y: abs * 10,
+    scale: 1 - abs * 0.1,
+    rotateY: -dir * (18 + abs * 10),
+    opacity: Math.max(0.35, 1 - abs * 0.18),
+    zIndex: 40 - abs * 8,
+    filter: abs >= 3 ? "blur(1px)" : "blur(0px)",
+  }
+}
 
 export default function CertificationsSection() {
+  const { t } = useLanguage()
   const [activeIndex, setActiveIndex] = useState(0)
+  const total = certifications.length
+  const dragStartX = useRef<number | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const lastWheelTime = useRef(0)
 
-  const visibleCards = useMemo(() => {
-    const total = certifications.length
-    return [
-      certifications[(activeIndex - 1 + total) % total],
-      certifications[activeIndex],
-      certifications[(activeIndex + 1) % total],
-    ]
-  }, [activeIndex])
+  const visible = useMemo(() => {
+    return certifications
+      .map((cert, index) => ({
+        cert,
+        slot: getRelativeSlot(index, activeIndex, total),
+      }))
+      .filter(
+        (item): item is { cert: (typeof certifications)[number]; slot: number } =>
+          item.slot !== null
+      )
+      .sort((a, b) => Math.abs(b.slot) - Math.abs(a.slot))
+  }, [activeIndex, total])
 
-  const navigate = (direction: "prev" | "next") => {
-    setActiveIndex((current) => {
-      const total = certifications.length
-      if (direction === "next") return (current + 1) % total
-      return (current - 1 + total) % total
-    })
+  const navigate = useCallback(
+    (direction: "prev" | "next") => {
+      setActiveIndex((current) => {
+        if (direction === "next") return (current + 1) % total
+        return (current - 1 + total) % total
+      })
+    },
+    [total]
+  )
+
+  useEffect(() => {
+    const node = containerRef.current
+    if (!node) return
+
+    const onWheel = (e: WheelEvent) => {
+      const isTrackpad =
+        e.deltaMode === 0 && (Math.abs(e.deltaX) > 25 || Math.abs(e.deltaY) > 25)
+      if (!isTrackpad) return
+
+      const now = Date.now()
+      if (now - lastWheelTime.current < 500) return
+
+      e.preventDefault()
+      lastWheelTime.current = now
+
+      if (Math.abs(e.deltaX) >= Math.abs(e.deltaY)) {
+        if (e.deltaX > 0) navigate("prev")
+        else navigate("next")
+      } else {
+        if (e.deltaY > 0) navigate("prev")
+        else navigate("next")
+      }
+    }
+
+    node.addEventListener("wheel", onWheel, { passive: false })
+    return () => node.removeEventListener("wheel", onWheel)
+  }, [navigate])
+
+  const onPointerDown = (e: ReactPointerEvent) => {
+    dragStartX.current = e.clientX
+  }
+
+  const onPointerUp = (e: ReactPointerEvent) => {
+    if (dragStartX.current === null) return
+    const delta = e.clientX - dragStartX.current
+    dragStartX.current = null
+    if (Math.abs(delta) < 40) return
+    if (delta < 0) navigate("next")
+    else navigate("prev")
   }
 
   return (
     <section id="certifications" className="scroll-mt-20 px-6 py-24">
-      <div className="mx-auto max-w-5xl">
-        <SectionHeading label="02" title="Certifications" />
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-10 flex items-end justify-between">
+          <SectionHeading label={t.certifications.label} title={t.certifications.title} />
 
-        <div className="relative mt-14">
-          <button
-            type="button"
-            onClick={() => navigate("prev")}
-            aria-label="Previous certification"
-            className="absolute left-0 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card/90 text-foreground shadow-lg backdrop-blur-sm transition-transform hover:scale-105"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-
-          <div className="mx-auto flex h-[420px] max-w-4xl items-center justify-center [perspective:1800px]">
-            <div className="relative h-full w-full overflow-visible">
-              {visibleCards.map((cert, index) => {
-                const isCenter = index === 1
-                const isLeft = index === 0
-                const isRight = index === 2
-
-                const position = isLeft ? { x: -160, y: 28, scale: 0.82, rotateY: 36, rotateX: 8, rotateZ: -4, opacity: 0.8, zIndex: 1 } : isCenter ? { x: 0, y: 0, scale: 1, rotateY: 0, rotateX: 0, rotateZ: 0, opacity: 1, zIndex: 3 } : { x: 160, y: 28, scale: 0.82, rotateY: -36, rotateX: 8, rotateZ: 4, opacity: 0.8, zIndex: 2 }
-
-                return (
-                  <motion.a
-                    key={`${cert.name}-${activeIndex}`}
-                    href={cert.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ x: isRight ? 180 : isLeft ? -180 : 0, y: isCenter ? 0 : 26, scale: isCenter ? 0.96 : 0.8, rotateY: isRight ? -42 : isLeft ? 42 : 0, opacity: 0, filter: "blur(6px)" }}
-                    animate={{ ...position, opacity: isCenter ? 1 : 0.8, filter: "blur(0px)" }}
-                    transition={springTransition}
-                    whileHover={{ y: isCenter ? -10 : -4, scale: isCenter ? 1.02 : 0.85 }}
-                    className={[
-                      "absolute left-1/2 top-10 flex h-[330px] w-[90%] max-w-[425px] -translate-x-1/2 flex-col overflow-hidden rounded-2xl border border-border bg-card text-left shadow-lg transition-shadow",
-                      isCenter ? "shadow-[0_28px_80px_rgba(15,23,42,0.18)]" : "shadow-[0_18px_40px_rgba(15,23,42,0.10)]",
-                      isCenter ? "cursor-pointer" : "pointer-events-none",
-                    ].join(" ")}
-                    style={{ transformStyle: "preserve-3d", transformOrigin: "center center" }}
-                  >
-                    <div className="relative h-48 w-full overflow-hidden border-b border-border bg-secondary/50">
-                      <img src={cert.link} alt={cert.name} className="h-full w-full object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/10 via-transparent to-background/5" />
-                    </div>
-
-                    <div className="flex flex-1 flex-col justify-between p-5">
-                      <div>
-                        <div className="mb-2 flex items-center justify-between gap-3">
-                          <span className="rounded-full border border-border bg-secondary/60 px-2 py-1 text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                            Certified
-                          </span>
-                          <ExternalLink className="h-4 w-4 text-muted-foreground/60" />
-                        </div>
-                        <h3 className="text-lg font-semibold leading-tight text-foreground">{cert.name}</h3>
-                      </div>
-
-                      <div className="mt-4 flex items-end justify-between gap-4">
-                        <div>
-                          <p className="text-sm font-medium text-primary">{cert.org}</p>
-                          <p className="text-xs text-muted-foreground">{cert.year}</p>
-                        </div>
-                        <div className="rounded-full border border-border bg-secondary/50 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                          {isCenter ? "Featured" : "Archive"}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.a>
-                )
-              })}
-            </div>
+          <div className="mb-2 flex gap-2">
+            <button
+              type="button"
+              onClick={() => navigate("prev")}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
+              aria-label={t.certifications.prev}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("next")}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
+              aria-label={t.certifications.next}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
           </div>
-
-          <button
-            type="button"
-            onClick={() => navigate("next")}
-            aria-label="Next certification"
-            className="absolute right-0 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card/90 text-foreground shadow-lg backdrop-blur-sm transition-transform hover:scale-105"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
         </div>
+
+        <div
+          ref={containerRef}
+          className="relative mx-auto flex h-[460px] w-full max-w-5xl cursor-grab touch-pan-y items-center justify-center active:cursor-grabbing sm:h-[520px]"
+          style={{ perspective: "1600px", perspectiveOrigin: "50% 45%" }}
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerCancel={() => {
+            dragStartX.current = null
+          }}
+        >
+          <AnimatePresence initial={false}>
+            {visible.map(({ cert, slot }) => {
+              const isCenter = slot === 0
+              const transform = slotTransform(slot)
+              const halfW = 190
+
+              return (
+                <motion.div
+                  key={cert.name}
+                  initial={{
+                    opacity: 0,
+                    x: Math.sign(slot || 1) * 280,
+                    scale: 0.72,
+                    rotateY: -Math.sign(slot || 1) * 40,
+                  }}
+                  animate={transform}
+                  exit={{
+                    opacity: 0,
+                    x: Math.sign(slot || 1) * 300,
+                    scale: 0.7,
+                    rotateY: -Math.sign(slot || 1) * 48,
+                  }}
+                  transition={spring}
+                  style={{
+                    transformStyle: "preserve-3d",
+                    transformOrigin: "center center",
+                    zIndex: transform.zIndex,
+                    marginLeft: -halfW,
+                  }}
+                  className="absolute left-1/2 top-6 h-[400px] w-[380px] sm:top-4 sm:h-[460px] sm:w-[400px]"
+                  onClick={() => {
+                    if (slot < 0) navigate("prev")
+                    if (slot > 0) navigate("next")
+                  }}
+                  role={isCenter ? undefined : "button"}
+                  tabIndex={isCenter ? undefined : 0}
+                  onKeyDown={(e) => {
+                    if (isCenter) return
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      if (slot < 0) navigate("prev")
+                      if (slot > 0) navigate("next")
+                    }
+                  }}
+                  aria-label={
+                    slot < 0
+                      ? t.certifications.prev
+                      : slot > 0
+                        ? t.certifications.next
+                        : undefined
+                  }
+                >
+                  <div
+                    className={[
+                      "relative flex h-full w-full flex-col overflow-hidden rounded-[1.75rem] border border-border bg-card",
+                      isCenter
+                        ? "shadow-[0_32px_80px_rgba(0,0,0,0.55)]"
+                        : "cursor-pointer shadow-[0_18px_48px_rgba(0,0,0,0.35)]",
+                    ].join(" ")}
+                  >
+                    {isCenter ? (
+                      <a
+                        href={cert.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="absolute inset-0 z-10"
+                        aria-label={`${t.certifications.viewCert}: ${cert.name}`}
+                        onClick={(e) => e.stopPropagation()}
+                        onPointerDown={(e) => e.stopPropagation()}
+                      />
+                    ) : null}
+
+                    <div className="relative h-[62%] w-full shrink-0 overflow-hidden bg-secondary/40">
+                      <img
+                        src={cert.link}
+                        alt=""
+                        className="h-full w-full object-cover"
+                        draggable={false}
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/55 via-transparent to-transparent" />
+                    </div>
+
+                    <div className="relative flex flex-1 flex-col items-center justify-center gap-1.5 px-6 pb-6 pt-5 text-center">
+                      {isCenter && (
+                        <ExternalLink className="pointer-events-none absolute right-5 top-4 z-20 h-4 w-4 text-muted-foreground/50" />
+                      )}
+                      <h3 className="text-lg font-semibold leading-snug text-foreground sm:text-xl">
+                        {cert.name}
+                      </h3>
+                      <p className="text-sm text-primary sm:text-base">{cert.org}</p>
+                      <p className="text-xs text-muted-foreground sm:text-sm">{cert.year}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
+        </div>
+
+        <div className="mt-2 flex justify-center gap-1.5">
+          {certifications.map((cert, i) => (
+            <button
+              key={cert.name}
+              type="button"
+              aria-label={`Go to ${cert.name}`}
+              aria-current={i === activeIndex}
+              onClick={() => setActiveIndex(i)}
+              className={[
+                "h-1.5 rounded-full transition-all",
+                i === activeIndex
+                  ? "w-5 bg-primary"
+                  : "w-1.5 bg-muted-foreground/35 hover:bg-muted-foreground/55",
+              ].join(" ")}
+            />
+          ))}
+        </div>
+
+        <p className="mt-5 animate-pulse text-center text-xs text-muted-foreground">
+          {t.certifications.swipeHint}
+        </p>
       </div>
     </section>
   )

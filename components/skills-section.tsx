@@ -16,39 +16,42 @@ import {
   Braces,
 } from "lucide-react"
 import SectionHeading from "./section-heading"
-
-const skillCategories = [
-  {
-    title: "Cloud & DevOps",
-    skills: [
-      { name: "Huawei", icon: Cloud },
-      { name: "Docker", icon: Container },
-      { name: "Kubernetes", icon: Layers },
-      { name: "Terraform", icon: Server },
-      { name: "CI/CD", icon: GitBranch },
-      { name: "Linux", icon: Terminal },
-      { name: "IOT", icon: Monitor },
-      { name: "Security", icon: Shield },
-    ],
-  },
-  {
-    title: "Frontend Development",
-    skills: [
-      { name: "React", icon: Code2 },
-      { name: "Next.js", icon: Globe },
-      { name: "TypeScript", icon: FileCode },
-      { name: "Tailwind CSS", icon: Palette },
-      { name: "HTML/CSS", icon: Braces },
-      { name: "JavaScript", icon: FileCode },
-    ],
-  },
-]
+import { useLanguage } from "@/lib/i18n/language-provider"
 
 export default function SkillsSection() {
+  const { t } = useLanguage()
+
+  const skillCategories = [
+    {
+      title: t.skills.cloudDevops,
+      skills: [
+        { name: "Huawei", icon: Cloud },
+        { name: "Docker", icon: Container },
+        { name: "Kubernetes", icon: Layers },
+        { name: "Terraform", icon: Server },
+        { name: "CI/CD", icon: GitBranch },
+        { name: "Linux", icon: Terminal },
+        { name: "IOT", icon: Monitor },
+        { name: "Security", icon: Shield },
+      ],
+    },
+    {
+      title: t.skills.frontend,
+      skills: [
+        { name: "React", icon: Code2 },
+        { name: "Next.js", icon: Globe },
+        { name: "TypeScript", icon: FileCode },
+        { name: "Tailwind CSS", icon: Palette },
+        { name: "HTML/CSS", icon: Braces },
+        { name: "JavaScript", icon: FileCode },
+      ],
+    },
+  ]
+
   return (
     <section id="skills" className="scroll-mt-20 px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading label="04" title="Skills" />
+        <SectionHeading label={t.skills.label} title={t.skills.title} />
 
         <div className="mt-12 grid gap-8 md:grid-cols-2">
           {skillCategories.map((category) => (

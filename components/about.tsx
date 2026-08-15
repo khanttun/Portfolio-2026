@@ -6,78 +6,22 @@ import useEmblaCarousel from "embla-carousel-react"
 import Navbar from "./navbar"
 import Footer from "./footer"
 import SectionHeading from "./section-heading"
+import { useLanguage } from "@/lib/i18n/language-provider"
 
-// ============================================================================
-// WORK TIMELINE DATA
-// ============================================================================
-const workTimeline = [
-  {
-    id: 1,
-    role: "Frontend Cloud Architect",
-    company: "Freelance / Self-Employed",
-    period: "2025 - Present",
-    description: "Architecting scalable cloud solutions and full-stack applications with focus on modern DevOps practices, containerization, and AI integration.",
-  },
-  {
-    id: 2,
-    role: "AI Responsse Validator (Part-time)",
-    company: "Digital Solutions Myanmar",
-    period: "Apr 2025 - Oct 2025",
-    description: "Designed and deployed cloud infrastructure, managed Kubernetes clusters, and optimized containerized applications for production environments.",
-  },
-  {
-    id: 3,
-    role: "Web Developer",
-    company: "Feburary Engineering Group Co., ltd",
-    period: "Jan 2023 -  Feb 2024",
-    description: "Developed responsive web applications using HTML, CSS, and JavaScript. Collaborated with designers and backend developers to implement user-friendly interfaces and optimize performance.",
-  },
-  {
-    id: 4,
-    role: "Electrical Engineer Intern",
-    company: "Web Development Studio",
-    period: "April 2022 - Nov 2022",
-    description: "Started career building HTML/CSS/JavaScript projects, learned React fundamentals, and contributed to team development initiatives.",
-  },
+const timelineMeta = [
+  { id: 1 as const },
+  { id: 2 as const },
+  { id: 3 as const },
+  { id: 4 as const },
 ]
 
-// ============================================================================
-// TESTIMONIALS DATA
-// ============================================================================
-const testimonials = [
-  {
-    id: 1,
-    quote: "Khant is an exceptional developer who combines technical expertise with a collaborative mindset. His ability to architect scalable solutions is impressive.",
-    name: "Khant Nyar Ko Ko",
-    role: "Co-founder, Tech Startup",
-    avatar: "KN",
-  },
-  {
-    id: 2,
-    quote: "An innovative approach to sustainability. The reverse vending machine was one of the most technically sound and well-executed projects I've judged at the Hylife Hackathon.",
-    name: "Judge Krseisenh MoMie Vivek , Hylife Hackathon",
-    role: "Event Organizer",
-    avatar: "KV",
-  },
-  {
-    id: 3,
-    quote: "Khant's understanding of game infrastructure and desigining interactive experiences was key to our success in the JIWC.",
-    name: "Thaung Than Han",
-    role: "Senior Full Stack Developer",
-    avatar: "TH",
-  },
-  {
-    id: 4,
-    quote: "Beyond his technical skills, Khant stands out for his initiative. He was among the first to capitalize on our Huawei certification programs, demonstrating the exact kind of professional drive, we aim to cultivate in our faculty",
-    name: "Suppakarn Chansareewittaya",
-    role: "Dean, Faculty of Digital Communication and Engineering",
-    avatar: "SC",
-  },
+const testimonialMeta = [
+  { id: 1 as const, name: "Khant Nyar Ko Ko", avatar: "KN" },
+  { id: 2 as const, name: "Judge Krseisenh MoMie Vivek , Hylife Hackathon", avatar: "KV" },
+  { id: 3 as const, name: "Thaung Than Han", avatar: "TH" },
+  { id: 4 as const, name: "Suppakarn Chansareewittaya", avatar: "SC" },
 ]
 
-// ============================================================================
-// PAGE COMPONENT
-// ============================================================================
 export default function AboutPage() {
   return (
     <>
@@ -93,60 +37,53 @@ export default function AboutPage() {
   )
 }
 
-// ============================================================================
-// PROFESSIONAL SUMMARY SECTION
-// ============================================================================
 function ProfessionalSummarySection() {
+  const { t } = useLanguage()
+  const a = t.about
+
   return (
     <section id="about-summary" className="scroll-mt-20 px-6 py-24">
       <div className="mx-auto max-w-5xl">
-        <SectionHeading label="About" title="Professional Profile" />
+        <SectionHeading label={a.summaryLabel} title={a.summaryTitle} />
 
         <div className="mt-12 grid gap-8 md:grid-cols-3">
-          {/* Left side: Professional Summary (2 columns) */}
           <div className="md:col-span-2">
             <div className="space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-foreground mb-4">Bio</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  I'm a Frontend Cloud Architect passionate about building scalable, intelligent systems that bridge the gap between beautiful user experiences and robust infrastructure. With expertise in modern web frameworks, cloud platform orchestration, and DevOps practices, I approach every project as an opportunity to innovate.
-                </p>
+                <h3 className="mb-4 text-xl font-bold text-foreground">{a.bioTitle}</h3>
+                <p className="leading-relaxed text-muted-foreground">{a.bioBody}</p>
               </div>
 
               <div>
-                <h3 className="text-xl font-bold text-foreground mb-4">Approach</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  I approach a codebase like a Chess opening. Whether implementing the London System or the King’s Gambit, the goal is the same: maintain control by removing unnecessary elements. I prioritize pattern recognition. I simplify complex user flows into compact solutions ensuring that the technical architecture is as lean as it is powerful.
-                </p>
+                <h3 className="mb-4 text-xl font-bold text-foreground">{a.approachTitle}</h3>
+                <p className="leading-relaxed text-muted-foreground">{a.approachBody}</p>
               </div>
 
               <div>
-                <h3 className="text-xl font-bold text-foreground mb-4">What Drives Me</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  I'm driven by the challenge of solving complex problems through elegant technical solutions. Collaborating with talented teams, mentoring junior developers, and exploring emerging technologies like generative AI keep me engaged and growing as an engineer.
-                </p>
+                <h3 className="mb-4 text-xl font-bold text-foreground">{a.drivesTitle}</h3>
+                <p className="leading-relaxed text-muted-foreground">{a.drivesBody}</p>
               </div>
             </div>
           </div>
 
-          {/* Right side: Technical Resolution (1 column) */}
           <div className="md:col-span-1">
             <div className="rounded-xl border border-white/10 bg-[#0d0d0d] p-6 backdrop-blur-sm">
-              <h3 className="text-lg font-bold text-emerald-400 mb-4 flex items-center gap-2">
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-emerald-400">
                 <Briefcase className="h-5 w-5" />
-                Technical Philosophy
+                {a.philosophyTitle}
               </h3>
-              <p className="text-sm text-zinc-300 leading-relaxed font-medium">
-                "Build systems that scale, code that reads like poetry, and solutions that anticipate tomorrow's challenges while solving today's problems."
+              <p className="text-sm font-medium leading-relaxed text-zinc-300">
+                &ldquo;{a.philosophyQuote}&rdquo;
               </p>
               <div className="mt-6 space-y-3 border-t border-white/5 pt-6">
                 <div>
-                  <p className="text-xs uppercase text-zinc-500 font-bold tracking-widest mb-1">Core Values</p>
+                  <p className="mb-1 text-xs font-bold uppercase tracking-widest text-zinc-500">
+                    {a.coreValues}
+                  </p>
                   <ul className="space-y-2 text-xs text-zinc-400">
-                    <li>• Scalability & Performance</li>
-                    <li>• Clean Architecture</li>
-                    <li>• Continuous Learning</li>
-                    <li>• Collaborative Spirit</li>
+                    {a.values.map((value) => (
+                      <li key={value}>• {value}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -158,19 +95,16 @@ function ProfessionalSummarySection() {
   )
 }
 
-// ============================================================================
-// ABOUT ME SECTION
-// ============================================================================
 function AboutMeSection() {
+  const { t } = useLanguage()
+
   return (
     <section id="about-me" className="scroll-mt-20 px-6 py-24">
       <div className="mx-auto max-w-3xl">
-        <div className="text-center space-y-8">
-          <h2 className="text-4xl md:text-5xl font-bold text-white">
-            About Me
-          </h2>
-          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-            I'm a Frontend Cloud Architect based in Thailand with a passion for building scalable, intelligent systems that seamlessly blend beautiful user experiences with robust infrastructure. With 2+ years of hands-on experience in front-end development and cloud architecture, I specialize in translating complex technical challenges into elegant, performant solutions. I thrive in collaborative environments and am always eager to learn emerging technologies and push the boundaries of my capabilities.
+        <div className="space-y-8 text-center">
+          <h2 className="text-4xl font-bold text-white md:text-5xl">{t.about.heroTitle}</h2>
+          <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
+            {t.about.heroBody}
           </p>
         </div>
       </div>
@@ -178,48 +112,47 @@ function AboutMeSection() {
   )
 }
 
-// ============================================================================
-// WORK TIMELINE SECTION
-// ============================================================================
 function WorkTimelineSection() {
+  const { t } = useLanguage()
+
   return (
-    <section id="work-timeline" className="scroll-mt-20 px-6 py-24 bg-black/20">
+    <section id="work-timeline" className="scroll-mt-20 bg-black/20 px-6 py-24">
       <div className="mx-auto max-w-5xl">
-        <SectionHeading label="Career" title="Work Timeline" />
+        <SectionHeading label={t.about.careerLabel} title={t.about.careerTitle} />
 
-        <div className="mt-12 relative">
-          {/* Central vertical line (visible on md and up) */}
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-400/50 via-emerald-400/20 to-transparent transform -translate-x-1/2" />
+        <div className="relative mt-12">
+          <div className="absolute bottom-0 left-1/2 top-0 hidden w-0.5 -translate-x-1/2 transform bg-gradient-to-b from-emerald-400/50 via-emerald-400/20 to-transparent md:block" />
 
-          {/* Timeline entries */}
           <div className="space-y-8 md:space-y-12">
-            {workTimeline.map((entry, index) => (
-              <div key={entry.id} className="relative">
-                {/* Timeline node (visible on md and up) */}
-                <div className="hidden md:block absolute left-1/2 top-6 w-4 h-4 bg-emerald-400 rounded-full transform -translate-x-1/2 border-4 border-[#0d0d0d] shadow-lg" />
+            {timelineMeta.map((entry, index) => {
+              const copy = t.about.timeline[entry.id]
+              return (
+                <div key={entry.id} className="relative">
+                  <div className="absolute left-1/2 top-6 hidden h-4 w-4 -translate-x-1/2 transform rounded-full border-4 border-[#0d0d0d] bg-emerald-400 shadow-lg md:block" />
 
-                {/* Alternating layout on desktop: odd on left, even on right */}
-                <div className={`md:w-1/2 ${index % 2 === 0 ? "md:mr-auto md:pr-8" : "md:ml-auto md:pl-8"}`}>
-                  {/* Glassmorphism card */}
-                  <div className="rounded-xl border border-white/10 bg-[#0d0d0d]/80 backdrop-blur-sm p-6 hover:border-emerald-400/40 transition-all duration-300 group">
-                    <div className="flex items-start justify-between gap-4 mb-3">
-                      <div>
-                        <h3 className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">
-                          {entry.role}
-                        </h3>
-                        <p className="text-sm text-emerald-400/80 font-medium">{entry.company}</p>
+                  <div
+                    className={`md:w-1/2 ${
+                      index % 2 === 0 ? "md:mr-auto md:pr-8" : "md:ml-auto md:pl-8"
+                    }`}
+                  >
+                    <div className="group rounded-xl border border-white/10 bg-[#0d0d0d]/80 p-6 backdrop-blur-sm transition-all duration-300 hover:border-emerald-400/40">
+                      <div className="mb-3 flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-lg font-bold text-white transition-colors group-hover:text-emerald-400">
+                            {copy.role}
+                          </h3>
+                          <p className="text-sm font-medium text-emerald-400/80">{copy.company}</p>
+                        </div>
+                        <span className="whitespace-nowrap text-xs font-bold uppercase tracking-widest text-zinc-500">
+                          {copy.period}
+                        </span>
                       </div>
-                      <span className="text-xs uppercase text-zinc-500 font-bold tracking-widest whitespace-nowrap">
-                        {entry.period}
-                      </span>
+                      <p className="text-sm leading-relaxed text-zinc-400">{copy.description}</p>
                     </div>
-                    <p className="text-sm text-zinc-400 leading-relaxed">
-                      {entry.description}
-                    </p>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>
@@ -227,10 +160,8 @@ function WorkTimelineSection() {
   )
 }
 
-// ============================================================================
-// TESTIMONIALS SECTION (EMBLA CAROUSEL)
-// ============================================================================
 function TestimonialsSection() {
+  const { t } = useLanguage()
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -251,61 +182,53 @@ function TestimonialsSection() {
   return (
     <section id="testimonials" className="scroll-mt-20 px-6 py-24">
       <div className="mx-auto max-w-5xl">
-        <SectionHeading label="Voice" title="Testimonials" />
+        <SectionHeading label={t.about.voiceLabel} title={t.about.voiceTitle} />
 
-        <div className="relative mt-12 group">
-          {/* Carousel Viewport */}
+        <div className="group relative mt-12">
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d0d]" ref={emblaRef}>
             <div className="flex">
-              {testimonials.map((testimonial) => (
-                <div key={testimonial.id} className="min-w-0 flex-[0_0_100%]">
-                  <div className="p-8 md:p-12 min-h-[320px] flex flex-col justify-center">
-                    {/* Quote */}
-                    <p className="text-lg md:text-xl text-white italic leading-relaxed mb-8">
-                      "{testimonial.quote}"
-                    </p>
+              {testimonialMeta.map((testimonial) => {
+                const copy = t.about.testimonials[testimonial.id]
+                return (
+                  <div key={testimonial.id} className="min-w-0 flex-[0_0_100%]">
+                    <div className="flex min-h-[320px] flex-col justify-center p-8 md:p-12">
+                      <p className="mb-8 text-lg italic leading-relaxed text-white md:text-xl">
+                        &ldquo;{copy.quote}&rdquo;
+                      </p>
 
-                    {/* Author Info */}
-                    <div className="flex items-center gap-4 border-t border-white/5 pt-6">
-                      {/* Avatar Placeholder */}
-                      <div className="h-14 w-14 rounded-full bg-gradient-to-br from-emerald-400/40 to-emerald-400/10 border border-emerald-400/30 flex items-center justify-center">
-                        <span className="text-sm font-bold text-emerald-400">
-                          {testimonial.avatar}
-                        </span>
-                      </div>
+                      <div className="flex items-center gap-4 border-t border-white/5 pt-6">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-emerald-400/30 bg-gradient-to-br from-emerald-400/40 to-emerald-400/10">
+                          <span className="text-sm font-bold text-emerald-400">
+                            {testimonial.avatar}
+                          </span>
+                        </div>
 
-                      {/* Name & Role */}
-                      <div>
-                        <h4 className="font-semibold text-white text-sm">
-                          {testimonial.name}
-                        </h4>
-                        <p className="text-xs text-zinc-500">
-                          {testimonial.role}
-                        </p>
+                        <div>
+                          <h4 className="text-sm font-semibold text-white">{testimonial.name}</h4>
+                          <p className="text-xs text-zinc-500">{copy.role}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
 
-          {/* Navigation Controls */}
-          <div className="flex items-center justify-center gap-6 mt-8">
+          <div className="mt-8 flex items-center justify-center gap-6">
             <button
               onClick={scrollPrev}
-              className="flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-900 border border-white/10 hover:bg-zinc-800 transition-all text-white active:scale-90"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-white transition-all hover:bg-zinc-800 active:scale-90"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
 
-            {/* Progress Indicators */}
             <div className="flex gap-2">
-              {testimonials.map((_, i) => (
+              {testimonialMeta.map((item) => (
                 <div
-                  key={i}
+                  key={item.id}
                   className={`h-1.5 rounded-full transition-all duration-500 ${
-                    i === selectedIndex ? "w-10 bg-emerald-500" : "w-4 bg-zinc-800"
+                    item.id - 1 === selectedIndex ? "w-10 bg-emerald-500" : "w-4 bg-zinc-800"
                   }`}
                 />
               ))}
@@ -313,7 +236,7 @@ function TestimonialsSection() {
 
             <button
               onClick={scrollNext}
-              className="flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-900 border border-white/10 hover:bg-zinc-800 transition-all text-white active:scale-90"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-white transition-all hover:bg-zinc-800 active:scale-90"
             >
               <ChevronRight className="h-6 w-6" />
             </button>
