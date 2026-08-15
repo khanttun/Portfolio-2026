@@ -9,6 +9,17 @@ import SectionHeading from "./section-heading"
 const projects = [
   {
     id: 1,
+    title: "Habor: MFU Student Center",
+    description:
+      "A personal portfolio website showcasing projects, skills, and achievements. Built with Next.js and Tailwind CSS for a modern, responsive design.",
+    stack: ["Next.js", "Tailwind CSS", "TypeScript", "Vercel", "PostgreSQL", "Supabase"],
+    image: "images/harbor.png",
+    demo: "https://harbor-student-center.vercel.app/",
+    github: "https://github.com/khanttun/Harbor-Student-Center",
+    isAwardWinner: false,
+  },
+  {
+    id: 2,
     title: "Eco-Point Landing Page",
     description:
       "Award-winning landing page developed during the Hylife Hackathon in Chiang Rai. Led the frontend development to create a high-conversion user experience, securing the 2nd Runner Up prize.",
@@ -18,30 +29,29 @@ const projects = [
     github: "https://github.com/khanttun/Ecopoint-landing",
     isAwardWinner: true,
   },
-    {
-    id: 2,
-
-    title: "Blood of the Rift: Top 10 Finalist",
-    description: "Finalist in the 2025 Generative AI Game Jam. Developed a 3D Ronin action-puzzle game using Spline, integrating AI-driven assets with interactive environment design and logic-based puzzles.",
-    stack: ["Spline 3D", "Generative AI", "Logic Design", "UI/UX", "Vite"],
-    image: "images/game.jpg", // Make sure to add this screenshot!
-    demo: "https://my.spline.design/forestfirepreventionscenarios-vGYVJW3W02Ot3Cu0fZ5sEMjQ/", // Add your game link here
-    github: "#", // Add your repo here
-    isAwardWinner: true, // This will trigger the badge we created
-  },
   {
     id: 3,
+    title: "Blood of the Rift: Top 10 Finalist",
+    description:
+      "Finalist in the 2025 Generative AI Game Jam. Developed a 3D Ronin action-puzzle game using Spline, integrating AI-driven assets with interactive environment design and logic-based puzzles.",
+    stack: ["Spline 3D", "Generative AI", "Logic Design", "UI/UX", "Vite"],
+    image: "images/game.jpg",
+    demo: "https://my.spline.design/forestfirepreventionscenarios-vGYVJW3W02Ot3Cu0fZ5sEMjQ/",
+    github: "#",
+    isAwardWinner: true,
+  },
+  {
+    id: 4,
     title: "LifePath: AI-Powered Career Advisor",
-    // We wrap the description in () and use a fragment <> so we can use a link
     description: (
       <>
         An AI-powered career guidance platform that helps users identify their ideal career paths. Co-created with{" "}
-        <a 
-          href="https://khantnyarkoko.vercel.app/" // Replace with Khant Nyar Ko Ko's link
-          target="_blank" 
+        <a
+          href="https://khantnyarkoko.vercel.app/"
+          target="_blank"
           rel="noopener noreferrer"
           className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
-          onClick={(e) => e.stopPropagation()} // Prevents the card click from firing
+          onClick={(e) => e.stopPropagation()}
         >
           Khant Nyar Ko Ko
         </a>
@@ -53,18 +63,17 @@ const projects = [
     github: "https://github.com/khanttun/life-path",
     isAwardWinner: false,
   },
-    {
-    id: 4,
-
-  title: "Interactive Web Experience",
-  description: "A high-engagement, responsive micro-site featuring custom CSS animations and interactive state management. Built to explore fluid user interactions and optimized for rapid deployment via Vercel.",
-  stack: ["Next.js", "Tailwind CSS", "Framer Motion", "Vercel"],
-  image: "images/romance.PNG",
-  demo: "https://valentine-s-day-website-theta.vercel.app/",
-  github: "#",
-  isAwardWinner: false,
+  {
+    id: 5,
+    title: "Interactive Web Experience",
+    description:
+      "A high-engagement, responsive micro-site featuring custom CSS animations and interactive state management. Built to explore fluid user interactions and optimized for rapid deployment via Vercel.",
+    stack: ["Next.js", "Tailwind CSS", "Framer Motion", "Vercel"],
+    image: "images/romance.PNG",
+    demo: "https://valentine-s-day-website-theta.vercel.app/",
+    github: "#",
+    isAwardWinner: false,
   },
-
 ]
 
 // 2. Main Section (Now with Slider Logic)
