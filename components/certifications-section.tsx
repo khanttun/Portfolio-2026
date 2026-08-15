@@ -80,9 +80,11 @@ export default function CertificationsSection() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [stageWidth, setStageWidth] = useState(0)
   const total = certifications.length
-  const dragStartX = useRef<number | null>(null)
+  const dragStart = useRef<{ x: number; y: number } | null>(null)
+  const didSwipe = useRef(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const lastWheelTime = useRef(0)
+  const lastSwipeTime = useRef(0)
 
   const fanScale = useFanScale(stageWidth)
   const cardW = DESKTOP_CARD.w * fanScale
@@ -154,20 +156,47 @@ export default function CertificationsSection() {
   }, [navigate])
 
   const onPointerDown = (e: ReactPointerEvent) => {
-    dragStartX.current = e.clientX
+    // Only track primary touch / left mouse button
+    if (e.pointerType === "mouse" && e.button !== 0) return
+    dragStart.current = { x: e.clientX, y: e.clientY }
+    didSwipe.current = false
+    e.currentTarget.setPointerCapture(e.pointerId)
   }
 
-  const onPointerUp = (e: ReactPointerEvent) => {
-    if (dragStartX.current === null) return
-    const delta = e.clientX - dragStartX.current
-    dragStartX.current = null
-    if (Math.abs(delta) < 40) return
-    if (delta < 0) navigate("next")
+  const onPointerMove = (e: ReactPointerEvent) => {
+    if (!dragStart.current) return
+    const dx = e.clientX - dragStart.current.x
+    const dy = e.clientY - dragStart.current.y
+    // Lock to horizontal once movement is clearly sideways
+    if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
+      didSwipe.current = true
+    }
+  }
+
+  const finishPointer = (e: ReactPointerEvent) => {
+    if (!dragStart.current) return
+    const dx = e.clientX - dragStart.current.x
+    const dy = e.clientY - dragStart.current.y
+    dragStart.current = null
+
+    if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    }
+
+    // Require a clear horizontal swipe
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return
+
+    const now = Date.now()
+    if (now - lastSwipeTime.current < 320) return
+    lastSwipeTime.current = now
+    didSwipe.current = true
+
+    if (dx < 0) navigate("next")
     else navigate("prev")
   }
 
   return (
-    <section id="certifications" className="scroll-mt-20 px-6 py-24">
+    <section id="certifications" className="scroll-mt-20 overflow-x-clip px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <div className="mb-10 flex items-end justify-between gap-4">
           <SectionHeading label={t.certifications.label} title={t.certifications.title} />
@@ -194,16 +223,18 @@ export default function CertificationsSection() {
 
         <div
           ref={containerRef}
-          className="relative mx-auto flex w-full max-w-5xl cursor-grab touch-pan-y items-center justify-center active:cursor-grabbing"
+          className="relative mx-auto flex w-full max-w-5xl cursor-grab touch-pan-y items-center justify-center overflow-x-clip active:cursor-grabbing"
           style={{
             perspective: "1600px",
             perspectiveOrigin: "50% 45%",
             height: stageH || DESKTOP_STAGE_H,
           }}
           onPointerDown={onPointerDown}
-          onPointerUp={onPointerUp}
+          onPointerMove={onPointerMove}
+          onPointerUp={finishPointer}
           onPointerCancel={() => {
-            dragStartX.current = null
+            dragStart.current = null
+            didSwipe.current = false
           }}
         >
           <AnimatePresence initial={false}>
@@ -239,6 +270,10 @@ export default function CertificationsSection() {
                   }}
                   className="absolute left-1/2"
                   onClick={() => {
+                    if (didSwipe.current) {
+                      didSwipe.current = false
+                      return
+                    }
                     if (slot < 0) navigate("prev")
                     if (slot > 0) navigate("next")
                   }}
@@ -275,8 +310,14 @@ export default function CertificationsSection() {
                         rel="noopener noreferrer"
                         className="absolute inset-0 z-10"
                         aria-label={`${t.certifications.viewCert}: ${cert.name}`}
-                        onClick={(e) => e.stopPropagation()}
-                        onPointerDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          // Don't open the cert if the gesture was a swipe
+                          if (didSwipe.current) {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            didSwipe.current = false
+                          }
+                        }}
                       />
                     ) : null}
 
