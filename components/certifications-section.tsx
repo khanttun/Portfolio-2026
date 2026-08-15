@@ -29,6 +29,10 @@ const FAN_DEPTH = 3
 
 const spring = { type: "spring" as const, stiffness: 280, damping: 32, mass: 0.85 }
 
+/** Desktop reference card size — mobile uses the same proportions, scaled down. */
+const DESKTOP_CARD = { w: 400, h: 460 }
+const DESKTOP_STAGE_H = 520
+
 function getRelativeSlot(index: number, active: number, total: number): number | null {
   let diff = (index - active + total) % total
   if (diff > total / 2) diff -= total
@@ -36,7 +40,7 @@ function getRelativeSlot(index: number, active: number, total: number): number |
   return diff
 }
 
-function slotTransform(slot: number) {
+function slotTransform(slot: number, scale: number) {
   const abs = Math.abs(slot)
   const dir = Math.sign(slot)
 
@@ -53,8 +57,8 @@ function slotTransform(slot: number) {
   }
 
   return {
-    x: dir * (110 + abs * 72),
-    y: abs * 10,
+    x: dir * (110 + abs * 72) * scale,
+    y: abs * 10 * scale,
     scale: 1 - abs * 0.1,
     rotateY: -dir * (18 + abs * 10),
     opacity: Math.max(0.35, 1 - abs * 0.18),
@@ -63,13 +67,40 @@ function slotTransform(slot: number) {
   }
 }
 
+function useFanScale(containerWidth: number) {
+  // Same coverflow as desktop, scaled so the center card stays ~72% of the stage
+  // and neighboring cards peek on both sides (matching the web composition).
+  if (containerWidth <= 0) return 1
+  const targetCardW = Math.min(DESKTOP_CARD.w, containerWidth * 0.72)
+  return Math.min(1, targetCardW / DESKTOP_CARD.w)
+}
+
 export default function CertificationsSection() {
   const { t } = useLanguage()
   const [activeIndex, setActiveIndex] = useState(0)
+  const [stageWidth, setStageWidth] = useState(0)
   const total = certifications.length
   const dragStartX = useRef<number | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const lastWheelTime = useRef(0)
+
+  const fanScale = useFanScale(stageWidth)
+  const cardW = DESKTOP_CARD.w * fanScale
+  const cardH = DESKTOP_CARD.h * fanScale
+  const stageH = DESKTOP_STAGE_H * fanScale
+  const halfW = cardW / 2
+
+  useEffect(() => {
+    const node = containerRef.current
+    if (!node) return
+
+    const update = () => setStageWidth(node.clientWidth)
+    update()
+
+    const ro = new ResizeObserver(update)
+    ro.observe(node)
+    return () => ro.disconnect()
+  }, [])
 
   const visible = useMemo(() => {
     return certifications
@@ -138,10 +169,10 @@ export default function CertificationsSection() {
   return (
     <section id="certifications" className="scroll-mt-20 px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-10 flex items-end justify-between">
+        <div className="mb-10 flex items-end justify-between gap-4">
           <SectionHeading label={t.certifications.label} title={t.certifications.title} />
 
-          <div className="mb-2 flex gap-2">
+          <div className="mb-2 flex shrink-0 gap-2">
             <button
               type="button"
               onClick={() => navigate("prev")}
@@ -163,8 +194,12 @@ export default function CertificationsSection() {
 
         <div
           ref={containerRef}
-          className="relative mx-auto flex h-[460px] w-full max-w-5xl cursor-grab touch-pan-y items-center justify-center active:cursor-grabbing sm:h-[520px]"
-          style={{ perspective: "1600px", perspectiveOrigin: "50% 45%" }}
+          className="relative mx-auto flex w-full max-w-5xl cursor-grab touch-pan-y items-center justify-center active:cursor-grabbing"
+          style={{
+            perspective: "1600px",
+            perspectiveOrigin: "50% 45%",
+            height: stageH || DESKTOP_STAGE_H,
+          }}
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
           onPointerCancel={() => {
@@ -174,22 +209,21 @@ export default function CertificationsSection() {
           <AnimatePresence initial={false}>
             {visible.map(({ cert, slot }) => {
               const isCenter = slot === 0
-              const transform = slotTransform(slot)
-              const halfW = 190
+              const transform = slotTransform(slot, fanScale)
 
               return (
                 <motion.div
                   key={cert.name}
                   initial={{
                     opacity: 0,
-                    x: Math.sign(slot || 1) * 280,
+                    x: Math.sign(slot || 1) * 280 * fanScale,
                     scale: 0.72,
                     rotateY: -Math.sign(slot || 1) * 40,
                   }}
                   animate={transform}
                   exit={{
                     opacity: 0,
-                    x: Math.sign(slot || 1) * 300,
+                    x: Math.sign(slot || 1) * 300 * fanScale,
                     scale: 0.7,
                     rotateY: -Math.sign(slot || 1) * 48,
                   }}
@@ -199,8 +233,11 @@ export default function CertificationsSection() {
                     transformOrigin: "center center",
                     zIndex: transform.zIndex,
                     marginLeft: -halfW,
+                    width: cardW || DESKTOP_CARD.w,
+                    height: cardH || DESKTOP_CARD.h,
+                    top: 16 * fanScale,
                   }}
-                  className="absolute left-1/2 top-6 h-[400px] w-[380px] sm:top-4 sm:h-[460px] sm:w-[400px]"
+                  className="absolute left-1/2"
                   onClick={() => {
                     if (slot < 0) navigate("prev")
                     if (slot > 0) navigate("next")
@@ -253,11 +290,11 @@ export default function CertificationsSection() {
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/55 via-transparent to-transparent" />
                     </div>
 
-                    <div className="relative flex flex-1 flex-col items-center justify-center gap-1.5 px-6 pb-6 pt-5 text-center">
+                    <div className="relative flex flex-1 flex-col items-center justify-center gap-1.5 px-5 pb-5 pt-4 text-center sm:px-6 sm:pb-6 sm:pt-5">
                       {isCenter && (
-                        <ExternalLink className="pointer-events-none absolute right-5 top-4 z-20 h-4 w-4 text-muted-foreground/50" />
+                        <ExternalLink className="pointer-events-none absolute right-4 top-3 z-20 h-4 w-4 text-muted-foreground/50 sm:right-5 sm:top-4" />
                       )}
-                      <h3 className="text-lg font-semibold leading-snug text-foreground sm:text-xl">
+                      <h3 className="text-base font-semibold leading-snug text-foreground sm:text-xl">
                         {cert.name}
                       </h3>
                       <p className="text-sm text-primary sm:text-base">{cert.org}</p>
