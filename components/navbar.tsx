@@ -35,7 +35,13 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/#hero-section" className="flex items-center gap-2 text-primary group" aria-label={t.nav.home}>
+        <Link
+          href="/#hero-section"
+          className={`group flex items-center gap-2 transition-colors ${
+            scrolled ? "text-primary" : "text-primary drop-shadow-[0_1px_10px_rgba(255,159,252,0.45)]"
+          }`}
+          aria-label={t.nav.home}
+        >
           <Terminal className="h-5 w-5 transition-transform group-hover:scale-110" />
           <span className="font-mono text-sm font-semibold tracking-wider">KT</span>
         </Link>
@@ -45,7 +51,11 @@ export default function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                className={`text-sm transition-colors ${
+                  scrolled
+                    ? "text-muted-foreground hover:text-primary"
+                    : "text-white/85 drop-shadow-[0_1px_8px_rgba(0,0,0,0.65)] hover:text-primary"
+                }`}
               >
                 {link.label}
               </Link>
@@ -60,7 +70,7 @@ export default function Navbar() {
           <LanguageSwitcher compact />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="text-muted-foreground"
+            className={scrolled ? "text-muted-foreground" : "text-primary"}
             aria-label={t.nav.toggleMenu}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

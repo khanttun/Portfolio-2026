@@ -1,10 +1,11 @@
-"use client"
+﻿"use client"
 
 import React, { useCallback, useEffect, useState, useRef } from "react"
 import { ChevronLeft, ChevronRight, Star, Maximize2 } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
 import SectionHeading from "./section-heading"
 import { useLanguage } from "@/lib/i18n/language-provider"
+import { ScrollReveal } from "./scroll-reveal"
 
 const awardMeta = [
   {
@@ -104,9 +105,9 @@ export default function AwardsSection() {
       <div className="mx-auto max-w-5xl">
         <SectionHeading label={t.awards.label} title={t.awards.title} />
 
-        <div className="group relative mt-12">
+        <ScrollReveal className="group relative mt-12" y={48}>
           <div
-            className="overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d0d]"
+            className="overflow-hidden rounded-2xl border border-white/10 bg-card"
             ref={(node) => {
               emblaRef(node)
               emblaNode.current = node
@@ -123,7 +124,7 @@ export default function AwardsSection() {
                       rel="noopener noreferrer"
                       className="group/card flex h-auto cursor-zoom-in flex-col md:h-[380px] md:flex-row"
                     >
-                      <div className="relative h-[280px] w-full overflow-hidden border-b border-white/10 bg-zinc-900 md:h-full md:w-1/2 md:border-b-0 md:border-r">
+                      <div className="relative h-[280px] w-full overflow-hidden border-b border-white/10 bg-secondary md:h-full md:w-1/2 md:border-b-0 md:border-r">
                         <img
                           src={award.image}
                           alt={copy.title}
@@ -139,9 +140,9 @@ export default function AwardsSection() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:hidden" />
                       </div>
 
-                      <div className="flex w-full flex-col justify-center bg-[#0d0d0d] p-8 transition-colors group-hover/card:bg-[#121212] md:w-1/2 md:p-10">
-                        <div className="mb-6 flex items-center gap-2 text-emerald-400">
-                          <Star className="h-4 w-4 fill-emerald-400" />
+                      <div className="flex w-full flex-col justify-center bg-card p-8 transition-colors group-hover/card:bg-secondary md:w-1/2 md:p-10">
+                        <div className="mb-6 flex items-center gap-2 text-primary">
+                          <Star className="h-4 w-4 fill-primary" />
                           <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
                             {t.awards.achievement}
                           </span>
@@ -150,24 +151,24 @@ export default function AwardsSection() {
                         <h3 className="text-2xl font-bold leading-tight text-white md:text-3xl">
                           {copy.subtitle}
                         </h3>
-                        <p className="mt-2 text-lg font-medium italic text-zinc-400">{copy.title}</p>
+                        <p className="mt-2 text-lg font-medium italic text-muted-foreground">{copy.title}</p>
 
                         <div className="mt-8 space-y-5">
                           <div className="flex flex-col">
-                            <span className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                            <span className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                               {t.awards.issuedBy}
                             </span>
-                            <span className="font-semibold text-zinc-200">{award.org}</span>
+                            <span className="font-semibold text-foreground">{award.org}</span>
                           </div>
                           <div className="flex flex-col">
-                            <span className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                            <span className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                               {t.awards.date}
                             </span>
-                            <span className="font-semibold text-zinc-200">{award.date}</span>
+                            <span className="font-semibold text-foreground">{award.date}</span>
                           </div>
                         </div>
 
-                        <p className="mt-8 line-clamp-3 border-t border-white/5 pt-6 text-sm leading-relaxed text-zinc-400">
+                        <p className="mt-8 line-clamp-3 border-t border-white/5 pt-6 text-sm leading-relaxed text-muted-foreground">
                           {copy.description}
                         </p>
                       </div>
@@ -181,7 +182,7 @@ export default function AwardsSection() {
           <div className="mt-8 flex items-center justify-center gap-6">
             <button
               onClick={scrollPrev}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-white transition-all hover:bg-zinc-800 active:scale-90"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-secondary text-foreground transition-all hover:bg-muted active:scale-90"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
@@ -191,7 +192,7 @@ export default function AwardsSection() {
                 <div
                   key={award.id}
                   className={`h-1.5 rounded-full transition-all duration-500 ${
-                    award.id === selectedIndex ? "w-10 bg-emerald-500" : "w-4 bg-zinc-800"
+                    award.id === selectedIndex ? "w-10 bg-primary" : "w-4 bg-muted"
                   }`}
                 />
               ))}
@@ -199,13 +200,14 @@ export default function AwardsSection() {
 
             <button
               onClick={scrollNext}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-white transition-all hover:bg-zinc-800 active:scale-90"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-secondary text-foreground transition-all hover:bg-muted active:scale-90"
             >
               <ChevronRight className="h-6 w-6" />
             </button>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   )
 }
+

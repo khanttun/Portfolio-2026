@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import React, { useCallback, useEffect, useState } from "react"
 import { ChevronLeft, ChevronRight, Briefcase } from "lucide-react"
@@ -7,6 +7,7 @@ import Navbar from "./navbar"
 import Footer from "./footer"
 import SectionHeading from "./section-heading"
 import { useLanguage } from "@/lib/i18n/language-provider"
+import { ScrollFloat, ScrollReveal } from "./scroll-reveal"
 
 const timelineMeta = [
   { id: 1 as const },
@@ -47,7 +48,7 @@ function ProfessionalSummarySection() {
         <SectionHeading label={a.summaryLabel} title={a.summaryTitle} />
 
         <div className="mt-12 grid gap-8 md:grid-cols-3">
-          <div className="md:col-span-2">
+          <ScrollReveal className="md:col-span-2" y={36}>
             <div className="space-y-6">
               <div>
                 <h3 className="mb-4 text-xl font-bold text-foreground">{a.bioTitle}</h3>
@@ -64,23 +65,23 @@ function ProfessionalSummarySection() {
                 <p className="leading-relaxed text-muted-foreground">{a.drivesBody}</p>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="md:col-span-1">
-            <div className="rounded-xl border border-white/10 bg-[#0d0d0d] p-6 backdrop-blur-sm">
-              <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-emerald-400">
+          <ScrollReveal className="md:col-span-1" delay={0.12} y={48}>
+            <div className="rounded-xl border border-white/10 bg-card p-6 backdrop-blur-sm">
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-primary">
                 <Briefcase className="h-5 w-5" />
                 {a.philosophyTitle}
               </h3>
-              <p className="text-sm font-medium leading-relaxed text-zinc-300">
+              <p className="text-sm font-medium leading-relaxed text-muted-foreground">
                 &ldquo;{a.philosophyQuote}&rdquo;
               </p>
               <div className="mt-6 space-y-3 border-t border-white/5 pt-6">
                 <div>
-                  <p className="mb-1 text-xs font-bold uppercase tracking-widest text-zinc-500">
+                  <p className="mb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
                     {a.coreValues}
                   </p>
-                  <ul className="space-y-2 text-xs text-zinc-400">
+                  <ul className="space-y-2 text-xs text-muted-foreground">
                     {a.values.map((value) => (
                       <li key={value}>• {value}</li>
                     ))}
@@ -88,7 +89,7 @@ function ProfessionalSummarySection() {
                 </div>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>
@@ -102,10 +103,14 @@ function AboutMeSection() {
     <section id="about-me" className="scroll-mt-20 px-6 py-24">
       <div className="mx-auto max-w-3xl">
         <div className="space-y-8 text-center">
-          <h2 className="text-4xl font-bold text-white md:text-5xl">{t.about.heroTitle}</h2>
-          <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
-            {t.about.heroBody}
-          </p>
+          <ScrollFloat>
+            <h2 className="text-4xl font-bold text-white md:text-5xl">{t.about.heroTitle}</h2>
+          </ScrollFloat>
+          <ScrollReveal delay={0.1}>
+            <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
+              {t.about.heroBody}
+            </p>
+          </ScrollReveal>
         </div>
       </div>
     </section>
@@ -121,34 +126,36 @@ function WorkTimelineSection() {
         <SectionHeading label={t.about.careerLabel} title={t.about.careerTitle} />
 
         <div className="relative mt-12">
-          <div className="absolute bottom-0 left-1/2 top-0 hidden w-0.5 -translate-x-1/2 transform bg-gradient-to-b from-emerald-400/50 via-emerald-400/20 to-transparent md:block" />
+          <div className="absolute bottom-0 left-1/2 top-0 hidden w-0.5 -translate-x-1/2 transform bg-gradient-to-b from-primary/50 via-primary/20 to-transparent md:block" />
 
           <div className="space-y-8 md:space-y-12">
             {timelineMeta.map((entry, index) => {
               const copy = t.about.timeline[entry.id]
               return (
                 <div key={entry.id} className="relative">
-                  <div className="absolute left-1/2 top-6 hidden h-4 w-4 -translate-x-1/2 transform rounded-full border-4 border-[#0d0d0d] bg-emerald-400 shadow-lg md:block" />
+                  <div className="absolute left-1/2 top-6 hidden h-4 w-4 -translate-x-1/2 transform rounded-full border-4 border-background bg-primary shadow-lg md:block" />
 
                   <div
                     className={`md:w-1/2 ${
                       index % 2 === 0 ? "md:mr-auto md:pr-8" : "md:ml-auto md:pl-8"
                     }`}
                   >
-                    <div className="group rounded-xl border border-white/10 bg-[#0d0d0d]/80 p-6 backdrop-blur-sm transition-all duration-300 hover:border-emerald-400/40">
-                      <div className="mb-3 flex items-start justify-between gap-4">
-                        <div>
-                          <h3 className="text-lg font-bold text-white transition-colors group-hover:text-emerald-400">
-                            {copy.role}
-                          </h3>
-                          <p className="text-sm font-medium text-emerald-400/80">{copy.company}</p>
+                    <ScrollReveal delay={index * 0.06} y={32}>
+                      <div className="group rounded-xl border border-white/10 bg-card/80 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:-translate-y-1">
+                        <div className="mb-3 flex items-start justify-between gap-4">
+                          <div>
+                            <h3 className="text-lg font-bold text-white transition-colors group-hover:text-primary">
+                              {copy.role}
+                            </h3>
+                            <p className="text-sm font-medium text-primary/80">{copy.company}</p>
+                          </div>
+                          <span className="whitespace-nowrap text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                            {copy.period}
+                          </span>
                         </div>
-                        <span className="whitespace-nowrap text-xs font-bold uppercase tracking-widest text-zinc-500">
-                          {copy.period}
-                        </span>
+                        <p className="text-sm leading-relaxed text-muted-foreground">{copy.description}</p>
                       </div>
-                      <p className="text-sm leading-relaxed text-zinc-400">{copy.description}</p>
-                    </div>
+                    </ScrollReveal>
                   </div>
                 </div>
               )
@@ -185,7 +192,7 @@ function TestimonialsSection() {
         <SectionHeading label={t.about.voiceLabel} title={t.about.voiceTitle} />
 
         <div className="group relative mt-12">
-          <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d0d]" ref={emblaRef}>
+          <div className="overflow-hidden rounded-2xl border border-white/10 bg-card" ref={emblaRef}>
             <div className="flex">
               {testimonialMeta.map((testimonial) => {
                 const copy = t.about.testimonials[testimonial.id]
@@ -197,15 +204,15 @@ function TestimonialsSection() {
                       </p>
 
                       <div className="flex items-center gap-4 border-t border-white/5 pt-6">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-emerald-400/30 bg-gradient-to-br from-emerald-400/40 to-emerald-400/10">
-                          <span className="text-sm font-bold text-emerald-400">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-primary/30 bg-gradient-to-br from-primary/40 to-primary/10">
+                          <span className="text-sm font-bold text-primary">
                             {testimonial.avatar}
                           </span>
                         </div>
 
                         <div>
                           <h4 className="text-sm font-semibold text-white">{testimonial.name}</h4>
-                          <p className="text-xs text-zinc-500">{copy.role}</p>
+                          <p className="text-xs text-muted-foreground">{copy.role}</p>
                         </div>
                       </div>
                     </div>
@@ -218,7 +225,7 @@ function TestimonialsSection() {
           <div className="mt-8 flex items-center justify-center gap-6">
             <button
               onClick={scrollPrev}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-white transition-all hover:bg-zinc-800 active:scale-90"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-secondary text-foreground transition-all hover:bg-muted active:scale-90"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
@@ -228,7 +235,7 @@ function TestimonialsSection() {
                 <div
                   key={item.id}
                   className={`h-1.5 rounded-full transition-all duration-500 ${
-                    item.id - 1 === selectedIndex ? "w-10 bg-emerald-500" : "w-4 bg-zinc-800"
+                    item.id - 1 === selectedIndex ? "w-10 bg-primary" : "w-4 bg-muted"
                   }`}
                 />
               ))}
@@ -236,7 +243,7 @@ function TestimonialsSection() {
 
             <button
               onClick={scrollNext}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-white transition-all hover:bg-zinc-800 active:scale-90"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-secondary text-foreground transition-all hover:bg-muted active:scale-90"
             >
               <ChevronRight className="h-6 w-6" />
             </button>
@@ -246,3 +253,4 @@ function TestimonialsSection() {
     </section>
   )
 }
+

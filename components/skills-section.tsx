@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 import SectionHeading from "./section-heading"
 import { useLanguage } from "@/lib/i18n/language-provider"
+import { ScrollReveal, StaggerChildren, StaggerItem } from "./scroll-reveal"
 
 export default function SkillsSection() {
   const { t } = useLanguage()
@@ -54,28 +55,27 @@ export default function SkillsSection() {
         <SectionHeading label={t.skills.label} title={t.skills.title} />
 
         <div className="mt-12 grid gap-8 md:grid-cols-2">
-          {skillCategories.map((category) => (
-            <div key={category.title}>
+          {skillCategories.map((category, categoryIndex) => (
+            <ScrollReveal key={category.title} delay={categoryIndex * 0.1} y={36}>
               <h3 className="mb-6 font-mono text-sm font-medium uppercase tracking-wider text-primary">
                 {category.title}
               </h3>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              <StaggerChildren className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {category.skills.map((skill) => {
                   const Icon = skill.icon
                   return (
-                    <div
-                      key={skill.name}
-                      className="flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center transition-all duration-300 hover:border-primary/40"
-                    >
-                      <Icon className="h-5 w-5 text-primary" />
-                      <span className="text-[11px] font-medium text-muted-foreground">
-                        {skill.name}
-                      </span>
-                    </div>
+                    <StaggerItem key={skill.name}>
+                      <div className="flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center transition-all duration-300 hover:border-primary/40 hover:-translate-y-1">
+                        <Icon className="h-5 w-5 text-primary" />
+                        <span className="text-[11px] font-medium text-muted-foreground">
+                          {skill.name}
+                        </span>
+                      </div>
+                    </StaggerItem>
                   )
                 })}
-              </div>
-            </div>
+              </StaggerChildren>
+            </ScrollReveal>
           ))}
         </div>
       </div>

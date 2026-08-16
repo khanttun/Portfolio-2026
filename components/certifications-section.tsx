@@ -12,6 +12,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
 import SectionHeading from "./section-heading"
 import { useLanguage } from "@/lib/i18n/language-provider"
+import { ScrollReveal } from "./scroll-reveal"
 
 const certifications = [
   { name: "OCI: Foundational Associate", org: "Oracle", year: "August, 2026", link: "/images/oci1.jpg" },
@@ -221,22 +222,23 @@ export default function CertificationsSection() {
           </div>
         </div>
 
-        <div
-          ref={containerRef}
-          className="relative mx-auto flex w-full max-w-5xl cursor-grab touch-pan-y items-center justify-center overflow-x-clip active:cursor-grabbing"
-          style={{
-            perspective: "1600px",
-            perspectiveOrigin: "50% 45%",
-            height: stageH || DESKTOP_STAGE_H,
-          }}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={finishPointer}
-          onPointerCancel={() => {
-            dragStart.current = null
-            didSwipe.current = false
-          }}
-        >
+        <ScrollReveal y={56}>
+          <div
+            ref={containerRef}
+            className="relative mx-auto flex w-full max-w-5xl cursor-grab touch-pan-y items-center justify-center overflow-x-clip active:cursor-grabbing"
+            style={{
+              perspective: "1600px",
+              perspectiveOrigin: "50% 45%",
+              height: stageH || DESKTOP_STAGE_H,
+            }}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={finishPointer}
+            onPointerCancel={() => {
+              dragStart.current = null
+              didSwipe.current = false
+            }}
+          >
           <AnimatePresence initial={false}>
             {visible.map(({ cert, slot }) => {
               const isCenter = slot === 0
@@ -346,29 +348,34 @@ export default function CertificationsSection() {
               )
             })}
           </AnimatePresence>
-        </div>
+          </div>
+        </ScrollReveal>
 
-        <div className="mt-2 flex justify-center gap-1.5">
-          {certifications.map((cert, i) => (
-            <button
-              key={cert.name}
-              type="button"
-              aria-label={`Go to ${cert.name}`}
-              aria-current={i === activeIndex}
-              onClick={() => setActiveIndex(i)}
-              className={[
-                "h-1.5 rounded-full transition-all",
-                i === activeIndex
-                  ? "w-5 bg-primary"
-                  : "w-1.5 bg-muted-foreground/35 hover:bg-muted-foreground/55",
-              ].join(" ")}
-            />
-          ))}
-        </div>
+        <ScrollReveal delay={0.12}>
+          <div className="mt-2 flex justify-center gap-1.5">
+            {certifications.map((cert, i) => (
+              <button
+                key={cert.name}
+                type="button"
+                aria-label={`Go to ${cert.name}`}
+                aria-current={i === activeIndex}
+                onClick={() => setActiveIndex(i)}
+                className={[
+                  "h-1.5 rounded-full transition-all",
+                  i === activeIndex
+                    ? "w-5 bg-primary"
+                    : "w-1.5 bg-muted-foreground/35 hover:bg-muted-foreground/55",
+                ].join(" ")}
+              />
+            ))}
+          </div>
+        </ScrollReveal>
 
-        <p className="mt-5 animate-pulse text-center text-xs text-muted-foreground">
-          {t.certifications.swipeHint}
-        </p>
+        <ScrollReveal delay={0.18}>
+          <p className="mt-5 animate-pulse text-center text-xs text-muted-foreground">
+            {t.certifications.swipeHint}
+          </p>
+        </ScrollReveal>
       </div>
     </section>
   )

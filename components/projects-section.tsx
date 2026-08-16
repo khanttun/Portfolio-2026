@@ -5,6 +5,7 @@ import { ExternalLink, Github, Trophy, ChevronLeft, ChevronRight } from "lucide-
 import useEmblaCarousel from "embla-carousel-react"
 import SectionHeading from "./section-heading"
 import { useLanguage } from "@/lib/i18n/language-provider"
+import { ScrollReveal } from "./scroll-reveal"
 
 const projectMeta = [
   {
@@ -129,25 +130,28 @@ export default function ProjectsSection() {
           </div>
         </div>
 
-        <div
-          className="cursor-grab overflow-hidden active:cursor-grabbing"
-          ref={(node) => {
-            emblaRef(node)
-            emblaNode.current = node
-          }}
-        >
-          <div className="flex">
-            {projectMeta.map((project) => (
-              <div key={project.id} className="min-w-0 flex-[0_0_90%] px-4">
-                <ProjectCard project={project} />
-              </div>
-            ))}
+        <ScrollReveal className="cursor-grab overflow-hidden active:cursor-grabbing" y={48}>
+          <div
+            ref={(node) => {
+              emblaRef(node)
+              emblaNode.current = node
+            }}
+          >
+            <div className="flex">
+              {projectMeta.map((project) => (
+                <div key={project.id} className="min-w-0 flex-[0_0_90%] px-4">
+                  <ProjectCard project={project} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
 
-        <p className="mt-6 animate-pulse text-center text-xs text-muted-foreground">
-          {t.projects.swipeHint}
-        </p>
+        <ScrollReveal delay={0.15}>
+          <p className="mt-6 animate-pulse text-center text-xs text-muted-foreground">
+            {t.projects.swipeHint}
+          </p>
+        </ScrollReveal>
       </div>
     </section>
   )
