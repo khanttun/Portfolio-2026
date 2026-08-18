@@ -39,8 +39,11 @@ export default function HeroSection() {
   return (
     <section
       id="hero-section"
-      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#05030f] px-6"
+      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#05030f] px-6 pb-20"
     >
+      {/* Expanded and smoother bottom gradient fade to seamlessly blend into the projects section */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-64 bg-gradient-to-b from-transparent via-[#05030f]/60 to-[#05030f]" />
+
       <div className="absolute inset-0 z-0">
         <MoltenMetal
           color1="#5227FF"
@@ -169,7 +172,7 @@ export default function HeroSection() {
 
       <a
         href="#projects"
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 animate-bounce text-primary/80 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+        className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 animate-bounce text-primary/80 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
         aria-label={t.hero.scrollDown}
       >
         <ArrowDown className="h-5 w-5" />

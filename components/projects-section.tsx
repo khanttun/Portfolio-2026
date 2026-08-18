@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useCallback, useEffect, useRef } from "react"
-import { ExternalLink, Github, Trophy, ChevronLeft, ChevronRight } from "lucide-react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { ExternalLink, Github, Trophy, ChevronLeft, ChevronRight, X } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
 import SectionHeading from "./section-heading"
 import { useLanguage } from "@/lib/i18n/language-provider"
@@ -56,6 +56,7 @@ const projectMeta = [
 
 export default function ProjectsSection() {
   const { t } = useLanguage()
+  const [selectedProject, setSelectedProject] = useState<(typeof projectMeta)[number] | null>(null)
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "center",
@@ -66,6 +67,22 @@ export default function ProjectsSection() {
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
   const lastScrollTime = useRef<number>(0)
   const scrollCooldown = 600
+
+  useEffect(() => {
+    if (!selectedProject) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelectedProject(null)
+    }
+
+    document.body.style.overflow = "hidden"
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = ""
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [selectedProject])
 
   useEffect(() => {
     if (!emblaNode.current) return
@@ -107,8 +124,13 @@ export default function ProjectsSection() {
   }, [scrollPrev, scrollNext])
 
   return (
-    <section id="projects" className="scroll-mt-20 px-6 py-24">
-      <div className="mx-auto max-w-2xl">
+    <section
+      id="projects"
+      className="relative -mt-12 scroll-mt-20 rounded-t-[2rem] border-t border-white/10 bg-[#090611]/95 px-6 pb-24 pt-16 shadow-[0_-24px_60px_rgba(82,39,255,0.12)]"
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#05030f]/0 via-[#090611]/80 to-[#090611]" />
+
+      <div className="relative mx-auto max-w-2xl">
         <div className="mb-10 flex items-end justify-between">
           <SectionHeading label={t.projects.label} title={t.projects.title} />
 
@@ -138,9 +160,11 @@ export default function ProjectsSection() {
             }}
           >
             <div className="flex">
-              {projectMeta.map((project) => (
+              {projectMeta.map((project, index) => (
                 <div key={project.id} className="min-w-0 flex-[0_0_90%] px-4">
-                  <ProjectCard project={project} />
+                  <ScrollReveal delay={index * 0.08} y={42}>
+                    <ProjectCard project={project} onImageClick={() => setSelectedProject(project)} />
+                  </ScrollReveal>
                 </div>
               ))}
             </div>
@@ -153,11 +177,44 @@ export default function ProjectsSection() {
           </p>
         </ScrollReveal>
       </div>
+
+      {selectedProject && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          onClick={() => setSelectedProject(null)}
+        >
+          <div
+            className="relative w-full max-w-5xl overflow-hidden rounded-2xl border border-white/10 bg-[#0d0a1a] shadow-[0_24px_80px_rgba(82,39,255,0.45)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedProject(null)}
+              className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white transition hover:bg-black/60"
+              aria-label="Close image preview"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <img
+              src={selectedProject.image || "/images/placeholder.png"}
+              alt={selectedProject.id ? `Project ${selectedProject.id}` : "Project preview"}
+              className="max-h-[80vh] w-full object-contain"
+            />
+          </div>
+        </div>
+      )}
     </section>
   )
 }
 
-function ProjectCard({ project }: { project: (typeof projectMeta)[number] }) {
+function ProjectCard({
+  project,
+  onImageClick,
+}: {
+  project: (typeof projectMeta)[number]
+  onImageClick: () => void
+}) {
   const { t } = useLanguage()
   const copy = t.projects.items[project.id]
 
@@ -170,23 +227,38 @@ function ProjectCard({ project }: { project: (typeof projectMeta)[number] }) {
         </div>
       )}
 
-      <a
-        href={project.demo}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="relative aspect-[16/9] w-full overflow-hidden border-b border-border"
+      <div
+        onClick={onImageClick}
+        className="relative block aspect-[16/9] w-full cursor-pointer overflow-hidden border-b border-border text-left"
+        aria-label={`Open preview for ${copy.title}`}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault()
+            onImageClick()
+          }
+        }}
       >
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/10 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
-          <div className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-xl">
-            {t.projects.viewDemo}
-          </div>
-        </div>
+        {project.demo !== "#" && (
+          <a
+            href={project.demo}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(event) => event.stopPropagation()}
+            className="absolute inset-0 z-10 flex items-center justify-center bg-primary/10 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 hover:opacity-100 focus-visible:opacity-100"
+          >
+            <span className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-xl">
+              {t.projects.viewDemo}
+            </span>
+          </a>
+        )}
         <img
           src={project.image || "/images/placeholder.png"}
           alt={copy.title}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-      </a>
+      </div>
 
       <div className="p-4">
         <div className="flex items-start justify-between gap-4">
