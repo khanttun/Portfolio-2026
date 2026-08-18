@@ -9,7 +9,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
+import { ChevronLeft, ChevronRight, ExternalLink, X } from "lucide-react"
 import SectionHeading from "./section-heading"
 import { useLanguage } from "@/lib/i18n/language-provider"
 import { ScrollReveal } from "./scroll-reveal"
@@ -79,6 +79,7 @@ function useFanScale(containerWidth: number) {
 export default function CertificationsSection() {
   const { t } = useLanguage()
   const [activeIndex, setActiveIndex] = useState(0)
+  const [selectedCert, setSelectedCert] = useState<(typeof certifications)[number] | null>(null)
   const [stageWidth, setStageWidth] = useState(0)
   const total = certifications.length
   const dragStart = useRef<{ x: number; y: number } | null>(null)
@@ -127,6 +128,22 @@ export default function CertificationsSection() {
     },
     [total]
   )
+
+  useEffect(() => {
+    if (!selectedCert) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelectedCert(null)
+    }
+
+    document.body.style.overflow = "hidden"
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = ""
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [selectedCert])
 
   useEffect(() => {
     const node = containerRef.current
@@ -305,28 +322,20 @@ export default function CertificationsSection() {
                         : "cursor-pointer shadow-[0_18px_48px_rgba(0,0,0,0.35)]",
                     ].join(" ")}
                   >
-                    {isCenter ? (
-                      <a
-                        href={cert.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="absolute inset-0 z-10"
-                        aria-label={`${t.certifications.viewCert}: ${cert.name}`}
-                        onClick={(e) => {
-                          // Don't open the cert if the gesture was a swipe
-                          if (didSwipe.current) {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            didSwipe.current = false
-                          }
-                        }}
-                      />
-                    ) : null}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedCert(cert)
+                      }}
+                      className="absolute inset-0 z-10 cursor-pointer"
+                      aria-label={`${t.certifications.viewCert}: ${cert.name}`}
+                    />
 
                     <div className="relative h-[62%] w-full shrink-0 overflow-hidden bg-secondary/40">
                       <img
                         src={cert.link}
-                        alt=""
+                        alt={cert.name}
                         className="h-full w-full object-cover"
                         draggable={false}
                       />
@@ -377,6 +386,33 @@ export default function CertificationsSection() {
           </p>
         </ScrollReveal>
       </div>
+
+      {selectedCert && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          onClick={() => setSelectedCert(null)}
+        >
+          <div
+            className="relative w-full max-w-5xl overflow-hidden rounded-2xl border border-white/10 bg-[#0d0a1a] shadow-[0_24px_80px_rgba(82,39,255,0.45)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedCert(null)}
+              className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white transition hover:bg-black/60"
+              aria-label="Close certificate preview"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <img
+              src={selectedCert.link}
+              alt={selectedCert.name}
+              className="max-h-[80vh] w-full object-contain"
+            />
+          </div>
+        </div>
+      )}
     </section>
   )
 }

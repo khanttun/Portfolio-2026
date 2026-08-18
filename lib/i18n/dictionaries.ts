@@ -43,7 +43,7 @@ const en = {
       1: {
         title: "Harbor: MFU Student Center",
         description:
-          "A personal portfolio website showcasing projects, skills, and achievements. Built with Next.js and Tailwind CSS for a modern, responsive design.",
+          "A responsive web platform for The Harbor Student Center to foster community among Myanmar students, featuring event schedules and community highlights. Built with Next.js and Tailwind CSS.",
       },
       2: {
         title: "Eco-Point Landing Page",
@@ -245,7 +245,7 @@ const th: Dictionary = {
       1: {
         title: "Harbor: ศูนย์นักเรียน MFU",
         description:
-          "เว็บไซต์พอร์ตโฟลิโอส่วนตัวที่นำเสนอโปรเจกต์ ทักษะ และผลงาน สร้างด้วย Next.js และ Tailwind CSS ในดีไซน์ที่ทันสมัยและรองรับทุกอุปกรณ์",
+          "เว็บไซต์แพลตฟอร์มสำหรับ The Harbor Student Center ที่ออกแบบมาเพื่อเสริมสร้างคอมมูนิตี้และเชื่อมต่อเหล่านักศึกษาเมียนมา พร้อมฟีเจอร์แสดงตารางกิจกรรมและเรื่องราวประทับใจ พัฒนาด้วย Next.js และ Tailwind CSS ให้ดีไซน์ที่ทันสมัยและใช้งานง่ายบนทุกอุปกรณ์",
       },
       2: {
         title: "หน้าแลนดิง Eco-Point",
