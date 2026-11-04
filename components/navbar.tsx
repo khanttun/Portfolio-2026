@@ -52,7 +52,9 @@ export default function Navbar() {
               <Link
                 href={link.href}
                 className={`text-sm transition-colors ${
-                  scrolled
+                  link.href === "/about"
+                    ? "text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)] motion-safe:animate-pulse"
+                    : scrolled
                     ? "text-muted-foreground hover:text-primary"
                     : "text-white/85 drop-shadow-[0_1px_8px_rgba(0,0,0,0.65)] hover:text-primary"
                 }`}
@@ -86,7 +88,11 @@ export default function Navbar() {
                 <Link
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  className={`block rounded-md px-3 py-2 text-sm transition-colors hover:bg-secondary hover:text-foreground ${
+                    link.href === "/about"
+                      ? "text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)] motion-safe:animate-pulse"
+                      : "text-muted-foreground"
+                  }`}
                 >
                   {link.label}
                 </Link>

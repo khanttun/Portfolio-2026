@@ -10,20 +10,27 @@ import { ScrollReveal } from "./scroll-reveal"
 const awardMeta = [
   {
     id: 0 as const,
+    org: "AR/VR and Digital Twin Hackathon",
+    date: "2026",
+    image: "images/dce.jpg",
+    position: "center",
+  },
+  {
+    id: 1 as const,
     org: "Hylife Hackathon",
     date: "2024",
     image: "images/eco.jpg",
     position: "center",
   },
   {
-    id: 1 as const,
+    id: 2 as const,
     org: "Joint International Workshop and Competition 2025",
     date: "August 2025",
     image: "images/jiwc.png",
     position: "center",
   },
   {
-    id: 2 as const,
+    id: 3 as const,
     org: "Ministry of Science and Technology",
     date: "January 26, 2024",
     image: "images/atomic.jpg",
@@ -31,7 +38,7 @@ const awardMeta = [
     zoom: "scale-110",
   },
   {
-    id: 3 as const,
+    id: 4 as const,
     org: "ROSATOM, MEPhI & YTU",
     date: "June 28-29, 2023",
     image: "images/hackatom.jpg",
@@ -85,9 +92,9 @@ export default function AwardsSection() {
         }
       } else if (Math.abs(e.deltaY) > 30) {
         if (e.deltaY < 0) {
-          scrollNext()
-        } else {
           scrollPrev()
+        } else {
+          scrollNext()
         }
       }
     }
@@ -210,4 +217,3 @@ export default function AwardsSection() {
     </section>
   )
 }
-

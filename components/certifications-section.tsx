@@ -15,14 +15,15 @@ import { useLanguage } from "@/lib/i18n/language-provider"
 import { ScrollReveal } from "./scroll-reveal"
 
 const certifications = [
+  { name: "OCI: Architect Associate", org: "Oracle", year: "Sept, 2026", link: "/images/OCI_Architect.jpg" },
   { name: "OCI: Foundational Associate", org: "Oracle", year: "August, 2026", link: "/images/oci1.jpg" },
-  { name: "HCIA Big Data", org: "Huawei", year: "July, 2026", link: "/images/Huawei Certificate/bigdata.png" },
+  { name: "HCCDA Big Data", org: "Huawei", year: "July, 2026", link: "/images/Huawei Certificate/bigdata.png" },
   { name: "HCCDP Solution Architectures", org: "Huawei", year: "July, 2026", link: "/images/Huawei Certificate/solution.png" },
-  { name: "HCIA Cloud Service", org: "Huawei", year: "Feb, 2026", link: "/images/Huawei Certificate/cloud.jpg" },
-  { name: "HCDDA Cloud Native", org: "Huawei", year: "Oct,2025", link: "/images/Huawei Certificate/native.png" },
-  { name: "HCDDA Tech Essentials", org: "Huawei", year: "Sept, 2025", link: "/images/Huawei Certificate/essentials.png" },
-  { name: "HCDDA AI", org: "Huawei", year: "Dec,2025", link: "/images/Huawei Certificate/AI.png" },
-  { name: "Agoda Tech Camp Workshop", org: "Agoda", year: "Dec, 2024", link: "/images/Huawei Certificate/Agoda.jfif" },
+  { name: "HCIA Cloud Service", org: "Huawei", year: "Feburary, 2026", link: "/images/Huawei Certificate/cloud.jpg" },
+  { name: "HCDDA Cloud Native", org: "Huawei", year: "October,2025", link: "/images/Huawei Certificate/native.png" },
+  { name: "HCDDA Tech Essentials", org: "Huawei", year: "September, 2025", link: "/images/Huawei Certificate/essentials.png" },
+  { name: "HCDDA AI", org: "Huawei", year: "December,2025", link: "/images/Huawei Certificate/AI.png" },
+  { name: "Agoda Tech Camp Workshop", org: "Agoda", year: "Deccember, 2024", link: "/images/Huawei Certificate/Agoda.jfif" },
   { name: "Level 4 Diploma in computing", org: "NCC Education", year: "April, 2024", link: "/images/Huawei Certificate/CCNA.jpg" },
 ]
 
@@ -164,8 +165,8 @@ export default function CertificationsSection() {
         if (e.deltaX > 0) navigate("prev")
         else navigate("next")
       } else {
-        if (e.deltaY > 0) navigate("prev")
-        else navigate("next")
+        if (e.deltaY > 0) navigate("next")
+        else navigate("prev")
       }
     }
 

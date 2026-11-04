@@ -18,6 +18,14 @@ const projectMeta = [
   },
   {
     id: 2 as const,
+    stack: ["Next.js", "Tailwind CSS", "Framer Motion", "Python", "Nivida"],
+    image: "/images/aifridge.png",
+    demo: "https://ai-fridge-six.vercel.app/",
+    github: "https://github.com/khanttun/ai-fridge",
+    isAwardWinner: true,
+  },
+  {
+    id: 3 as const,
     stack: ["React", "HTML", "CSS", "JavaScript", "Git"],
     image: "images/ecopoint.PNG",
     demo: "https://ecopoint-landing-nu.vercel.app/",
@@ -25,7 +33,7 @@ const projectMeta = [
     isAwardWinner: true,
   },
   {
-    id: 3 as const,
+    id: 4 as const,
     stack: ["Spline 3D", "Generative AI", "Logic Design", "UI/UX", "Vite"],
     image: "images/game.jpg",
     demo: "https://my.spline.design/forestfirepreventionscenarios-vGYVJW3W02Ot3Cu0fZ5sEMjQ/",
@@ -33,7 +41,7 @@ const projectMeta = [
     isAwardWinner: true,
   },
   {
-    id: 4 as const,
+    id: 5 as const,
     stack: ["React", "Node.js", "MongoDB", "OpenAI API"],
     image: "images/hackathon.PNG",
     demo: "https://v0-life-path-gold.vercel.app/",
@@ -45,11 +53,11 @@ const projectMeta = [
     },
   },
   {
-    id: 5 as const,
-    stack: ["Next.js", "Tailwind CSS", "Framer Motion", "Vercel"],
-    image: "images/romance.PNG",
-    demo: "https://valentine-s-day-website-theta.vercel.app/",
-    github: "#",
+    id: 6 as const,
+    stack: ["Chrome Extension", "NVIDIA AI", "YouTube API", "JavaScript"],
+    image: "/images/moodtuneai.jpg",
+    demo: "https://github.com/khanttun/MoodTune---AI-chrome-Extension",
+    github: "https://github.com/khanttun/MoodTune---AI-chrome-Extension",
     isAwardWinner: false,
   },
 ]
@@ -57,6 +65,7 @@ const projectMeta = [
 export default function ProjectsSection() {
   const { t } = useLanguage()
   const [selectedProject, setSelectedProject] = useState<(typeof projectMeta)[number] | null>(null)
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "center",
@@ -67,6 +76,20 @@ export default function ProjectsSection() {
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
   const lastScrollTime = useRef<number>(0)
   const scrollCooldown = 600
+
+  useEffect(() => {
+    if (!emblaApi) return
+
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap())
+    onSelect()
+    emblaApi.on("select", onSelect)
+    emblaApi.on("reInit", onSelect)
+
+    return () => {
+      emblaApi.off("select", onSelect)
+      emblaApi.off("reInit", onSelect)
+    }
+  }, [emblaApi])
 
   useEffect(() => {
     if (!selectedProject) return
@@ -130,44 +153,67 @@ export default function ProjectsSection() {
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#05030f]/0 via-[#090611]/80 to-[#090611]" />
 
-      <div className="relative mx-auto max-w-2xl">
-        <div className="mb-10 flex items-end justify-between">
+      <div className="relative mx-auto max-w-4xl">
+        <div className="mx-auto mb-10 max-w-2xl">
           <SectionHeading label={t.projects.label} title={t.projects.title} />
-
-          <div className="mb-2 flex gap-2">
-            <button
-              onClick={scrollPrev}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
-              aria-label={t.projects.prev}
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={scrollNext}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
-              aria-label={t.projects.next}
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
         </div>
 
-        <ScrollReveal className="cursor-grab overflow-hidden active:cursor-grabbing" y={48}>
-          <div
-            ref={(node) => {
-              emblaRef(node)
-              emblaNode.current = node
-            }}
+        <div className="mx-auto flex max-w-4xl items-center justify-center gap-2 sm:gap-4">
+          <button
+            type="button"
+            onClick={scrollPrev}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
+            aria-label={t.projects.prev}
           >
-            <div className="flex">
-              {projectMeta.map((project, index) => (
-                <div key={project.id} className="min-w-0 flex-[0_0_90%] px-4">
-                  <ScrollReveal delay={index * 0.08} y={42}>
-                    <ProjectCard project={project} onImageClick={() => setSelectedProject(project)} />
-                  </ScrollReveal>
-                </div>
-              ))}
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          <ScrollReveal className="w-full min-w-0 max-w-2xl cursor-grab overflow-hidden active:cursor-grabbing" y={48}>
+            <div
+              ref={(node) => {
+                emblaRef(node)
+                emblaNode.current = node
+              }}
+            >
+              <div className="flex">
+                {projectMeta.map((project, index) => (
+                  <div key={project.id} className="flex min-w-0 flex-[0_0_100%] px-4">
+                    <ScrollReveal className="h-full w-full" delay={index * 0.08} y={42}>
+                      <ProjectCard project={project} onImageClick={() => setSelectedProject(project)} />
+                    </ScrollReveal>
+                  </div>
+                ))}
+              </div>
             </div>
+          </ScrollReveal>
+
+          <button
+            type="button"
+            onClick={scrollNext}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
+            aria-label={t.projects.next}
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+
+        <ScrollReveal delay={0.12}>
+          <div className="mx-auto mt-2 flex max-w-2xl justify-center gap-1.5">
+            {projectMeta.map((project, index) => (
+              <button
+                key={project.id}
+                type="button"
+                aria-label={`Go to ${t.projects.items[project.id].title}`}
+                aria-current={index === selectedIndex}
+                onClick={() => emblaApi?.scrollTo(index)}
+                className={[
+                  "h-1.5 rounded-full transition-all",
+                  index === selectedIndex
+                    ? "w-5 bg-primary"
+                    : "w-1.5 bg-muted-foreground/35 hover:bg-muted-foreground/55",
+                ].join(" ")}
+              />
+            ))}
           </div>
         </ScrollReveal>
 
@@ -219,7 +265,7 @@ function ProjectCard({
   const copy = t.projects.items[project.id]
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:bg-card/80">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:bg-card/80">
       {project.isAwardWinner && (
         <div className="absolute right-3 top-3 z-20 flex items-center gap-1 rounded-full bg-yellow-500 px-3 py-1 text-[10px] font-bold text-black shadow-lg">
           <Trophy className="h-3 w-3" />
@@ -260,7 +306,7 @@ function ProjectCard({
         />
       </div>
 
-      <div className="p-4">
+      <div className="flex flex-1 flex-col p-4">
         <div className="flex items-start justify-between gap-4">
           <h3 className="text-lg font-bold text-foreground transition-colors group-hover:text-primary">
             {copy.title}
@@ -276,7 +322,7 @@ function ProjectCard({
                 <Github className="h-5 w-5" />
               </a>
             )}
-            {project.demo !== "#" && (
+            {project.demo !== "#" && project.demo !== project.github && (
               <a
                 href={project.demo}
                 target="_blank"
@@ -311,7 +357,7 @@ function ProjectCard({
           )}
         </p>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-auto flex flex-wrap gap-2 pt-6">
           {project.stack.map((tech) => (
             <span
               key={tech}
