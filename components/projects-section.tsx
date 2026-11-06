@@ -19,7 +19,7 @@ const projectMeta = [
   {
     id: 2 as const,
     stack: ["Next.js", "Tailwind CSS", "Framer Motion", "Python", "Nivida"],
-    image: "/images/aifridge.png",
+    image: "/images/aifridge.PNG",
     demo: "https://ai-fridge-six.vercel.app/",
     github: "https://github.com/khanttun/ai-fridge",
     isAwardWinner: true,
@@ -158,17 +158,17 @@ export default function ProjectsSection() {
           <SectionHeading label={t.projects.label} title={t.projects.title} />
         </div>
 
-        <div className="mx-auto flex max-w-4xl items-center justify-center gap-2 sm:gap-4">
+        <div className="mx-auto grid w-full max-w-4xl grid-cols-[40px_minmax(0,1fr)_40px] items-center gap-x-2 gap-y-3 sm:flex sm:gap-4">
           <button
             type="button"
             onClick={scrollPrev}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
+            className="col-start-1 row-start-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
             aria-label={t.projects.prev}
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
 
-          <ScrollReveal className="w-full min-w-0 max-w-2xl cursor-grab overflow-hidden active:cursor-grabbing" y={48}>
+          <ScrollReveal className="col-span-3 row-start-1 w-full min-w-0 max-w-2xl cursor-grab overflow-hidden active:cursor-grabbing sm:col-auto sm:row-auto" y={48}>
             <div
               ref={(node) => {
                 emblaRef(node)
@@ -190,7 +190,7 @@ export default function ProjectsSection() {
           <button
             type="button"
             onClick={scrollNext}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
+            className="col-start-3 row-start-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card transition-colors hover:bg-secondary"
             aria-label={t.projects.next}
           >
             <ChevronRight className="h-5 w-5" />
@@ -265,7 +265,7 @@ function ProjectCard({
   const copy = t.projects.items[project.id]
 
   return (
-    <article className="group relative mx-auto flex h-full w-[92%] flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:bg-card/80 sm:w-full">
+    <article className="group relative mx-auto flex h-full w-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:bg-card/80">
       {project.isAwardWinner && (
         <div className="absolute right-3 top-3 z-20 flex items-center gap-1 rounded-full bg-yellow-500 px-3 py-1 text-[10px] font-bold text-black shadow-lg">
           <Trophy className="h-3 w-3" />
@@ -275,7 +275,7 @@ function ProjectCard({
 
       <div
         onClick={onImageClick}
-        className="relative block aspect-[16/9] w-full cursor-pointer overflow-hidden border-b border-border text-left"
+        className="relative block aspect-[16/8] w-full cursor-pointer overflow-hidden border-b border-border text-left sm:aspect-[16/9]"
         aria-label={`Open preview for ${copy.title}`}
         role="button"
         tabIndex={0}
@@ -335,7 +335,7 @@ function ProjectCard({
           </div>
         </div>
 
-        <p className="mt-3 text-xs leading-relaxed text-muted-foreground sm:mt-4 sm:text-sm">
+        <p className="mt-3 line-clamp-3 text-xs leading-relaxed text-muted-foreground sm:mt-4 sm:line-clamp-none sm:text-sm">
           {"description" in copy ? (
             copy.description
           ) : (
@@ -357,11 +357,11 @@ function ProjectCard({
           )}
         </p>
 
-        <div className="mt-auto flex flex-wrap gap-1.5 pt-4 sm:gap-2 sm:pt-6">
+        <div className="mt-auto flex flex-wrap gap-1 pt-3 sm:gap-2 sm:pt-6">
           {project.stack.map((tech) => (
             <span
               key={tech}
-              className="rounded-md border border-border bg-secondary/50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground"
+              className="rounded-md border border-border bg-secondary/50 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-muted-foreground sm:px-2.5 sm:py-1 sm:text-[10px]"
             >
               {tech}
             </span>
