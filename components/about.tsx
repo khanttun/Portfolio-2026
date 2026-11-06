@@ -141,19 +141,19 @@ function WorkTimelineSection() {
                     }`}
                   >
                     <ScrollReveal delay={index * 0.06} y={32}>
-                      <div className="group rounded-xl border border-white/10 bg-card/80 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:-translate-y-1">
-                        <div className="mb-3 flex items-start justify-between gap-4">
-                          <div>
-                            <h3 className="text-lg font-bold text-white transition-colors group-hover:text-primary">
+                      <div className="group rounded-xl border border-white/10 bg-card/80 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:-translate-y-1 sm:p-6">
+                        <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                          <div className="min-w-0">
+                            <h3 className="text-base font-bold text-white transition-colors group-hover:text-primary sm:text-lg">
                               {copy.role}
                             </h3>
                             <p className="text-sm font-medium text-primary/80">{copy.company}</p>
                           </div>
-                          <span className="whitespace-nowrap text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                          <span className="block w-full min-w-0 max-w-full whitespace-normal break-words text-[10px] font-bold uppercase leading-tight tracking-wide text-muted-foreground [overflow-wrap:anywhere] sm:w-auto sm:whitespace-nowrap sm:text-xs sm:leading-normal sm:tracking-widest">
                             {copy.period}
                           </span>
                         </div>
-                        <p className="text-sm leading-relaxed text-muted-foreground">{copy.description}</p>
+                        <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">{copy.description}</p>
                       </div>
                     </ScrollReveal>
                   </div>
@@ -253,4 +253,3 @@ function TestimonialsSection() {
     </section>
   )
 }
-
