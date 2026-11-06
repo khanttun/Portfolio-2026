@@ -131,7 +131,7 @@ export default function AwardsSection() {
                       rel="noopener noreferrer"
                       className="group/card flex h-auto cursor-zoom-in flex-col md:h-[380px] md:flex-row"
                     >
-                      <div className="relative h-[190px] w-full overflow-hidden border-b border-white/10 bg-secondary md:h-full md:w-1/2 md:border-b-0 md:border-r">
+                      <div className="relative h-[160px] w-full overflow-hidden border-b border-white/10 bg-secondary md:h-full md:w-1/2 md:border-b-0 md:border-r">
                         <img
                           src={award.image}
                           alt={copy.title}
@@ -147,20 +147,20 @@ export default function AwardsSection() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:hidden" />
                       </div>
 
-                      <div className="flex w-full flex-col justify-center bg-card p-5 transition-colors group-hover/card:bg-secondary md:w-1/2 md:p-10">
-                        <div className="mb-3 flex items-center gap-2 text-primary md:mb-6">
+                      <div className="flex w-full flex-col justify-center bg-card p-4 transition-colors group-hover/card:bg-secondary md:w-1/2 md:p-10">
+                        <div className="mb-2 flex items-center gap-2 text-primary md:mb-6">
                           <Star className="h-4 w-4 fill-primary" />
                           <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
                             {t.awards.achievement}
                           </span>
                         </div>
 
-                        <h3 className="text-xl font-bold leading-tight text-white md:text-3xl">
+                        <h3 className="text-lg font-bold leading-tight text-white md:text-3xl">
                           {copy.subtitle}
                         </h3>
                         <p className="mt-2 text-base font-medium italic text-muted-foreground md:text-lg">{copy.title}</p>
 
-                        <div className="mt-5 space-y-3 md:mt-8 md:space-y-5">
+                        <div className="mt-4 space-y-2 md:mt-8 md:space-y-5">
                           <div className="flex flex-col">
                             <span className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                               {t.awards.issuedBy}
@@ -175,7 +175,7 @@ export default function AwardsSection() {
                           </div>
                         </div>
 
-                        <p className="mt-5 line-clamp-3 border-t border-white/5 pt-4 text-xs leading-relaxed text-muted-foreground md:mt-8 md:pt-6 md:text-sm">
+                        <p className="mt-4 line-clamp-3 border-t border-white/5 pt-3 text-xs leading-relaxed text-muted-foreground md:mt-8 md:pt-6 md:text-sm">
                           {copy.description}
                         </p>
                       </div>

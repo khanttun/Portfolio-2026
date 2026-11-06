@@ -72,8 +72,8 @@ export default function ProjectsSection() {
   })
   const emblaNode = useRef<HTMLDivElement>(null)
 
-  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
-  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
   const lastScrollTime = useRef<number>(0)
   const scrollCooldown = 600
 

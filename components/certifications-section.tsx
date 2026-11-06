@@ -89,8 +89,12 @@ export default function CertificationsSection() {
   const lastSwipeTime = useRef(0)
 
   const fanScale = useFanScale(stageWidth)
-  const cardW = DESKTOP_CARD.w * fanScale
-  const cardH = DESKTOP_CARD.h * fanScale
+  const cardScale =
+    stageWidth > 0 && stageWidth < 640
+      ? Math.min(1, (stageWidth * 0.62) / DESKTOP_CARD.w)
+      : fanScale
+  const cardW = DESKTOP_CARD.w * cardScale
+  const cardH = DESKTOP_CARD.h * cardScale
   const stageH = DESKTOP_STAGE_H * fanScale
   const halfW = cardW / 2
 
