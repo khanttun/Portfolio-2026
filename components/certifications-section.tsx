@@ -70,10 +70,9 @@ function slotTransform(slot: number, scale: number) {
 }
 
 function useFanScale(containerWidth: number) {
-  // Same coverflow as desktop, scaled so the center card stays ~72% of the stage
-  // and neighboring cards peek on both sides (matching the web composition).
   if (containerWidth <= 0) return 1
-  const targetCardW = Math.min(DESKTOP_CARD.w, containerWidth * 0.72)
+  const mobileScale = containerWidth < 640 ? 0.64 : 0.72
+  const targetCardW = Math.min(DESKTOP_CARD.w, containerWidth * mobileScale)
   return Math.min(1, targetCardW / DESKTOP_CARD.w)
 }
 

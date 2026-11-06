@@ -265,7 +265,7 @@ function ProjectCard({
   const copy = t.projects.items[project.id]
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:bg-card/80">
+    <article className="group relative mx-auto flex h-full w-[92%] flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:bg-card/80 sm:w-full">
       {project.isAwardWinner && (
         <div className="absolute right-3 top-3 z-20 flex items-center gap-1 rounded-full bg-yellow-500 px-3 py-1 text-[10px] font-bold text-black shadow-lg">
           <Trophy className="h-3 w-3" />
@@ -306,9 +306,9 @@ function ProjectCard({
         />
       </div>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         <div className="flex items-start justify-between gap-4">
-          <h3 className="text-lg font-bold text-foreground transition-colors group-hover:text-primary">
+          <h3 className="text-base font-bold text-foreground transition-colors group-hover:text-primary sm:text-lg">
             {copy.title}
           </h3>
           <div className="flex shrink-0 items-center gap-3">
@@ -335,7 +335,7 @@ function ProjectCard({
           </div>
         </div>
 
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 text-xs leading-relaxed text-muted-foreground sm:mt-4 sm:text-sm">
           {"description" in copy ? (
             copy.description
           ) : (
@@ -357,7 +357,7 @@ function ProjectCard({
           )}
         </p>
 
-        <div className="mt-auto flex flex-wrap gap-2 pt-6">
+        <div className="mt-auto flex flex-wrap gap-1.5 pt-4 sm:gap-2 sm:pt-6">
           {project.stack.map((tech) => (
             <span
               key={tech}
